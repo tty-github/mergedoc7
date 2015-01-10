@@ -191,7 +191,9 @@ public class Comment {
      * @param comment コメント
      */    
     public void addSee(String comment) {
-        if (sees == null) sees = new LinkedList<String>();
+        if (sees == null) {
+            sees = new LinkedList<String>();
+        }
         sees.add(comment);
     }
 
@@ -201,7 +203,9 @@ public class Comment {
      * @param comment コメント
      */    
     public void addSince(String comment) {
-        if (sinces == null) sinces = new LinkedList<String>();
+        if (sinces == null) {
+            sinces = new LinkedList<String>();
+        }
         sinces.add(comment);
     }
 
@@ -211,7 +215,9 @@ public class Comment {
      * @param comment コメント
      */    
     public void addParam(String comment) {
-        if (params == null) params = new LinkedList<String>();
+        if (params == null) {
+            params = new LinkedList<String>();
+        }
         comment = formatHTML(comment);
         params.add(comment);
     }
@@ -222,7 +228,9 @@ public class Comment {
      * @param comment コメント
      */    
     public void addReturn(String comment) {
-        if (returns == null) returns = new LinkedList<String>();
+        if (returns == null) {
+            returns = new LinkedList<String>();
+        }
         comment = formatHTML(comment);
         returns.add(comment);
     }
@@ -233,7 +241,9 @@ public class Comment {
      * @param comment コメント
      */    
     public void addThrows(String comment) {
-        if (throwses == null) throwses = new LinkedList<String>();
+        if (throwses == null) {
+            throwses = new LinkedList<String>();
+        }
         comment = formatHTML(comment);
         throwses.add(comment);
     }
@@ -301,7 +311,9 @@ public class Comment {
             Pattern pat = PatternCache.getPattern("(?s)" + tagName + " *(.*?)([^\\{]@\\w+|/\\s*$)");
             Matcher mat = pat.matcher(undeco);
             for (int start = 0; mat.find(start); start = mat.end(1)) {
-                if (tagValues == null) tagValues = new LinkedList<String>();
+                if (tagValues == null) {
+                    tagValues = new LinkedList<String>();
+                }
                 tagValues.add(mat.group(1));
             }
         }
@@ -323,7 +335,9 @@ public class Comment {
             Pattern pat = PatternCache.getPattern(" +" + tagName + " *(.*)\n");
             Matcher mat = pat.matcher(srcBody);
             while (mat.find()) {
-                if (tagValues == null) tagValues = new LinkedList<String>();
+                if (tagValues == null) {
+                    tagValues = new LinkedList<String>();
+                }
                 tagValues.add(mat.group(1));
             }
         }
@@ -506,7 +520,9 @@ public class Comment {
             }
             pres.add(mat.group(2));
         }
-        if (pres == null) return;
+        if (pres == null) {
+            return;
+        }
         
         // API ドキュメント説明の pre タグの値に Java ソースの内容を上書き
         Matcher descMatcher = pat.matcher(docBody);
@@ -568,6 +584,7 @@ public class Comment {
             width = initWidth;
         }
         
+        @Override
         public String toString() {
             String str = comment;
             if (str.length() > 0) {
@@ -694,7 +711,9 @@ public class Comment {
         if (FastStringUtils.matches(srcBody, emptyDescRegex)) {
             docBody = null;
             o.build();
-            if (o.resultHeight() <= o.originHeight) return;
+            if (o.resultHeight() <= o.originHeight) {
+                return;
+            }
         }
 
         // タグが元 Java ソースコメントに無い場合は除去
@@ -705,7 +724,9 @@ public class Comment {
         boolean b4 = shrinkTagList("@return", returns);
         if (b1 || b2 || b3 || b4) {
             o.build();
-            if (o.resultHeight() <= o.originHeight) return;
+            if (o.resultHeight() <= o.originHeight) {
+                return;
+            }
         }
         
         // 高さ（行数）
@@ -722,7 +743,9 @@ public class Comment {
             }
             pTagMat.appendTail(sb);
             o.comment = sb.toString();
-            if (height <= o.originHeight) return;
+            if (height <= o.originHeight) {
+                return;
+            }
         }
         
         // <th、<td、</tr タグの前の改行を除去
@@ -736,7 +759,9 @@ public class Comment {
             }
             tdTagMat.appendTail(sb);
             o.comment = sb.toString();
-            if (height <= o.originHeight) return;
+            if (height <= o.originHeight) {
+                return;
+            }
         }
         
         // <li、</ul、</ol タグの前の改行を除去
@@ -750,7 +775,9 @@ public class Comment {
             }
             liTagMat.appendTail(sb);
             o.comment = sb.toString();
-            if (height <= o.originHeight) return;
+            if (height <= o.originHeight) {
+                return;
+            }
         }
 
         // 空行を削除
@@ -763,13 +790,17 @@ public class Comment {
         }
         emptyLineMat.appendTail(sb);
         o.comment = sb.toString();
-        if (height <= o.originHeight) return;
+        if (height <= o.originHeight) {
+            return;
+        }
         
         // 元 Java ソースコメントの 1 行目から説明がある場合
         String firstLineRegex = "(?s)\\s*/\\*\\*\\s*\n.*";
         if (!FastStringUtils.matches(srcBody, firstLineRegex)) {
             o.enabledFirstLine = true;
-            if (o.resultHeight() <= o.originHeight) return;
+            if (o.resultHeight() <= o.originHeight) {
+                return;
+            }
         }
 
         // 横幅を増やして再ビルド
@@ -777,22 +808,32 @@ public class Comment {
         while (o.resultHeight() > o.originHeight && o.width < maxWidth) {
             
             o.build();
-            if (o.resultHeight() <= o.originHeight) return;
+            if (o.resultHeight() <= o.originHeight) {
+                return;
+            }
 
             if (o.comment.contains("<")) {
                 
                 o.comment = pTagPat.matcher(o.comment).replaceAll("$1");
-                if (o.resultHeight() <= o.originHeight) return;
+                if (o.resultHeight() <= o.originHeight) {
+                    return;
+                }
 
                 o.comment = tdTagPat.matcher(o.comment).replaceAll("$1");
-                if (o.resultHeight() <= o.originHeight) return;
+                if (o.resultHeight() <= o.originHeight) {
+                    return;
+                }
 
                 o.comment = liTagPat.matcher(o.comment).replaceAll("$1");
-                if (o.resultHeight() <= o.originHeight) return;
+                if (o.resultHeight() <= o.originHeight) {
+                    return;
+                }
             }
 
             o.comment = emptyLinePat.matcher(o.comment).replaceAll("");
-            if (o.resultHeight() <= o.originHeight) return;
+            if (o.resultHeight() <= o.originHeight) {
+                return;
+            }
 
             if (o.width < 100) {
                 o.width += 4;
@@ -845,7 +886,9 @@ public class Comment {
         }
         mat.appendTail(sb);
         o.comment = sb.toString();
-        if (height == o.originHeight) return;
+        if (height == o.originHeight) {
+            return;
+        }
         
         // </pre>、</blockquote>、</ol>、</ul> の下に空行追加
         sb = new StringBuffer();
@@ -857,7 +900,9 @@ public class Comment {
         }
         mat.appendTail(sb);
         o.comment = sb.toString();
-        if (height == o.originHeight) return;
+        if (height == o.originHeight) {
+            return;
+        }
     }
     
     /**
@@ -914,14 +959,18 @@ public class Comment {
             String tag = "@param   ";
             int indentCnt = tag.length() + nameLenMax + 1;
             StringBuilder indent = new StringBuilder(indentCnt);
-            for ( ;indentCnt>0; indentCnt--) indent.append(' ');
+            for ( ;indentCnt>0; indentCnt--) {
+                indent.append(' ');
+            }
 
             // バッファに出力
             for (int i = 0; i < paramsSize; i++) {
 
                 int spaceCnt = nameLenMax - nameLens[i];
                 StringBuilder space = new StringBuilder();
-                for ( ;spaceCnt>0; spaceCnt--) space.append(' ');
+                for ( ;spaceCnt>0; spaceCnt--) {
+                    space.append(' ');
+                }
                 
                 String comment = params.get(i);
                 comment = FastStringUtils.replaceFirst(comment,
@@ -971,7 +1020,9 @@ public class Comment {
      */    
     private void appendTo(String tag, List<String> tagList, StringBuilder sb, int width) {
 
-        if (tagList == null) return;
+        if (tagList == null) {
+            return;
+        }
 
         for (String comment : tagList) {
             
@@ -1029,10 +1080,14 @@ public class Comment {
             if (preTagArea) {
                 resultBuf.append(lineValue);
                 resultBuf.append("\n");
-                if (lineValue.endsWith("</pre>")) preTagArea = false;
+                if (lineValue.endsWith("</pre>")) {
+                    preTagArea = false;
+                }
                 continue;
             }
-            if (lineValue.endsWith("<pre>" )) preTagArea = true;
+            if (lineValue.endsWith("<pre>" )) {
+                preTagArea = true;
+            }
 
             // 横幅が収まる場合
             if (lineValue.getBytes().length < width) {

@@ -32,6 +32,7 @@ public class Persister {
     public static class Key {
         private final String str;
         private Key(String str)  {this.str = str;}
+        @Override
         public String toString() {return str;}
     }
 
@@ -212,7 +213,9 @@ public class Persister {
     public void setStrings(Key key, String[] values) {
         for (int i = 0; ; i++) {
             String str = prop.getProperty(key.toString() + i);
-            if (str == null) break;
+            if (str == null) {
+                break;
+            }
             prop.remove(key.toString() + i);
         }
         for (int i = 0; i < values.length; i++) {
@@ -230,7 +233,9 @@ public class Persister {
         List<String> list = new LinkedList<String>();
         for (int i = 0; ; i++) {
             String str = prop.getProperty(key.toString() + i);
-            if (str == null) break;
+            if (str == null) {
+                break;
+            }
             list.add(str);
         }
         return list.toArray(new String[list.size()]);

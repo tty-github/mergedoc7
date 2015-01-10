@@ -37,6 +37,7 @@ abstract public class AbstractHandler extends DefaultHandler {
      * @throws  SAXException SAX 例外。ほかの例外をラップしている可能性がある
      * @see org.xml.sax.ContentHandler#startElement
      */
+    @Override
     public void startElement(
         String uri,
         String localName,
@@ -78,6 +79,7 @@ abstract public class AbstractHandler extends DefaultHandler {
      * @throws  SAXException SAX 例外。ほかの例外をラップしている可能性がある
      * @see org.xml.sax.ContentHandler#endElement
      */
+    @Override
     public void endElement(String uri, String localName, String qName)
         throws SAXException
     {
@@ -98,6 +100,7 @@ abstract public class AbstractHandler extends DefaultHandler {
      * @throws  SAXException SAX 例外。ほかの例外をラップしている可能性がある
      * @see org.xml.sax.ContentHandler#characters
      */
+    @Override
     public void characters(char[] c, int start, int length) throws SAXException {
 
         if (currentEntry == null) {

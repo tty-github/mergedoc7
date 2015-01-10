@@ -179,6 +179,7 @@ public class ReplaceEntry {
      * このインスタンスの文字列表現を取得します。
      * @return 文字列表現
      */
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("\n説明 [");

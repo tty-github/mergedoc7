@@ -62,9 +62,13 @@ public class Merger {
     public String merge(String source) throws IOException {
 
         scanClassName(source);
-        if (className == null) return source;
+        if (className == null) {
+            return source;
+        }
         APIDocument apiDoc = new APIDocument(docDirectory, className, docEncoding);
-        if (apiDoc.isEmpty()) return source;
+        if (apiDoc.isEmpty()) {
+            return source;
+        }
 
         JavaBuffer javaBuf = new JavaBuffer(classKind, className, source);
         while (javaBuf.nextComment()) {

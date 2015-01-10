@@ -116,13 +116,16 @@ abstract public class ArchiveInputStream {
         ZipStreamProxy(ZipInputStream is) {
             this.is = is;
         }
+        @Override
         public void close() throws IOException {
             is.close();
         }
+        @Override
         public Entry getNextEntry() throws IOException {
             ZipEntry entry = is.getNextEntry();
             return (entry != null) ? new ZipEntryProxy(entry) : null;
         }
+        @Override
         public int read(byte[] b) throws IOException {
             return is.read(b);
         }
@@ -136,6 +139,7 @@ abstract public class ArchiveInputStream {
         ZipEntryProxy(ZipEntry entry) {
             this.entry = entry;
         }
+        @Override
         public String getName() {
             return entry.getName();
         }
@@ -149,13 +153,16 @@ abstract public class ArchiveInputStream {
         TarStreamProxy(TarInputStream is) {
             this.is = is;
         }
+        @Override
         public void close() throws IOException {
             is.close();
         }
+        @Override
         public Entry getNextEntry() throws IOException {
             TarEntry entry = is.getNextEntry();
             return (entry != null) ? new TarEntryProxy(entry) : null;
         }
+        @Override
         public int read(byte[] b) throws IOException {
             return is.read(b);
         }
@@ -169,6 +176,7 @@ abstract public class ArchiveInputStream {
         TarEntryProxy(TarEntry entry) {
             this.entry = entry;
         }
+        @Override
         public String getName() {
             return entry.getName();
         }

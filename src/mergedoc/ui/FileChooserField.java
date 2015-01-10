@@ -79,13 +79,16 @@ public class FileChooserField extends JPanel {
 
     /** ディレクトリ選択モード */
     public static final SelectionMode DIRECTORIES = new SelectionMode() {
+        @Override
         public void apply(JFileChooser chooser) {
             chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             chooser.removeChoosableFileFilter(chooser.getFileFilter());
             chooser.setFileFilter(new FileFilter() {
+                @Override
                 public boolean accept(File f) {
                     return f.isDirectory();
                 }
+                @Override
                 public String getDescription() {
                     return "ディレクトリのみ";
                 }
@@ -95,14 +98,17 @@ public class FileChooserField extends JPanel {
 
     /** ZIP ファイル選択モード */
     public static final SelectionMode ZIP_FILES = new SelectionMode() {
+        @Override
         public void apply(JFileChooser chooser) {
             chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
             chooser.setFileFilter(new FileFilter() {
+                @Override
                 public boolean accept(File f) {
                     return f.isDirectory() ||
                            f.getName().endsWith(".zip") ||
                            f.getName().endsWith(".jar");
                 }
+                @Override
                 public String getDescription() {
                     return "*.zip, *.jar";
                 }
@@ -112,9 +118,11 @@ public class FileChooserField extends JPanel {
 
     /** ZIP, TGZ ファイル選択モード */
     public static final SelectionMode ZIP_TGZ_FILES = new SelectionMode() {
+        @Override
         public void apply(JFileChooser chooser) {
             chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
             chooser.setFileFilter(new FileFilter() {
+                @Override
                 public boolean accept(File f) {
                     return f.isDirectory() ||
                            f.getName().endsWith(".zip") ||
@@ -122,6 +130,7 @@ public class FileChooserField extends JPanel {
                            f.getName().endsWith(".tgz") ||
                            f.getName().endsWith(".tar.gz");
                 }
+                @Override
                 public String getDescription() {
                     return "*.zip, *.jar, *.tgz, *.tar.gz";
                 }
@@ -170,6 +179,7 @@ public class FileChooserField extends JPanel {
 
         // ファイル選択ダイアログの設定
         button.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 int result = chooser.showOpenDialog(FileChooserField.this);
                 if (result == JFileChooser.APPROVE_OPTION) {
@@ -266,13 +276,16 @@ public class FileChooserField extends JPanel {
         }
         
         private void add(Object charset) {
-            if (isSupported(charset)) charsetNames.add(charset);
+            if (isSupported(charset)) {
+                charsetNames.add(charset);
+            }
         }
         
         private void fireAdded() {
             combo.setModel(new CharsetSortedModel(charsetNames));
         }
         
+        @Override
         public void addElement(Object charset) {
             if (isSupported(charset) && !charsetNames.contains(charset)) {
                 charsetNames.add(charset);
@@ -280,6 +293,7 @@ public class FileChooserField extends JPanel {
             }
         }
 
+        @Override
         public void setSelectedItem(Object charset) {
             if (charset != null) {
                 if (!charsetNames.contains(charset)) {
@@ -299,14 +313,17 @@ public class FileChooserField extends JPanel {
 
         TransferHandler originHandler = textField.getTransferHandler();
 
+        @Override
         public void exportToClipboard(JComponent comp, Clipboard clipboard, int action) {
             originHandler.exportToClipboard(comp, clipboard, action);
         }
 
+        @Override
         public int getSourceActions(JComponent comp) {
             return originHandler.getSourceActions(comp);
         }
 
+        @Override
         public boolean canImport(JComponent comp, DataFlavor[] flavors) {
             for (DataFlavor flavor : flavors) {
                 if (flavor.isFlavorJavaFileListType()) {
@@ -316,6 +333,7 @@ public class FileChooserField extends JPanel {
             return originHandler.canImport(comp, flavors);
         }
 
+        @Override
         public boolean importData(JComponent comp, Transferable t) {
             boolean imported = false;
             if (t.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
@@ -333,6 +351,7 @@ public class FileChooserField extends JPanel {
             }
             if (imported && chooseListener != null && getFile().exists()) {
                 SwingUtilities.invokeLater(new Runnable() {
+                    @Override
                     public void run() {
                         chooseListener.actionPerformed(null);
                     }

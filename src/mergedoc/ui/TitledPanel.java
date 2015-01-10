@@ -42,6 +42,7 @@ public class TitledPanel extends JPanel {
      * @return コンポーネント引数
      * @see JPanel#add(Component)
      */
+    @Override
     public Component add(Component comp) {
         
         if (innerPanel == null) {

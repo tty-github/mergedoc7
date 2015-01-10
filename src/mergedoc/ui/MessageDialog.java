@@ -6,6 +6,7 @@
 package mergedoc.ui;
 
 import java.awt.Component;
+
 import javax.swing.JOptionPane;
 
 /**

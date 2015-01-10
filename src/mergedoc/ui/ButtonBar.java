@@ -52,6 +52,7 @@ public class ButtonBar extends JPanel {
 
     /** ボタン状態：初期 */
     public final ButtonState INIT_STATE = new ButtonState() {
+        @Override
         public void apply() {
             runButton.setText("実行(R)");
             runButton.setMnemonic(KeyEvent.VK_R);
@@ -66,6 +67,7 @@ public class ButtonBar extends JPanel {
 
     /** ボタン状態：処理中 */
     public final ButtonState WORKING_STATE = new ButtonState() {
+        @Override
         public void apply() {
             runButton.setText("実行(R)");
             runButton.setEnabled(false);
@@ -78,6 +80,7 @@ public class ButtonBar extends JPanel {
 
     /** ボタン状態：完了後 */
     public final ButtonState FINISH_STATE = new ButtonState() {
+        @Override
         public void apply() {
             runButton.setText("戻る(B)");
             runButton.setMnemonic(KeyEvent.VK_B);
@@ -92,6 +95,7 @@ public class ButtonBar extends JPanel {
 
     /** ボタン状態：キャンセル後 */
     public final ButtonState CANCEL_STATE = new ButtonState() {
+        @Override
         public void apply() {
             runButton.setText("戻る(B)");
             runButton.setMnemonic(KeyEvent.VK_B);
@@ -134,6 +138,7 @@ public class ButtonBar extends JPanel {
         endButton = createButton();
 
         SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
 
                 // このパネルにコンポーネントを追加
@@ -196,8 +201,10 @@ public class ButtonBar extends JPanel {
      * このメソッドはスレッドに対して安全です。
      * @param enabled 有効にする場合は true
      */
+    @Override
     public void setEnabled(final boolean enabled) {
         SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 runButton.setEnabled(enabled);
                 endButton.setEnabled(enabled);

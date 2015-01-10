@@ -111,6 +111,7 @@ public class PreferencePanel extends JPanel {
         srcField.setSelectionMode(FileChooserField.ZIP_TGZ_FILES);
         outField.setSelectionMode(FileChooserField.ZIP_FILES);
         docField.setChooseListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 resolveArchivePath(docField.getFile());
             }
@@ -178,6 +179,7 @@ public class PreferencePanel extends JPanel {
         for (ReplaceEntry entry : list) {
             EntryCheckBox cb = new EntryCheckBox(entry);
             cb.addActionListener(new ActionListener(){
+                @Override
                 public void actionPerformed(ActionEvent e) {
                     previewScrollPane.updatePreview(entryCheckList);
                 }
@@ -341,12 +343,19 @@ public class PreferencePanel extends JPanel {
             String outEnc = outField.getComboBox().getSelectedItem().toString();
             ReplaceEntry[] entries = getSelectedEntries();
 
+            @Override
             public File getDocDirectory()  {return docDir;}
+            @Override
             public File getInputArchive()  {return srcFile;}
+            @Override
             public File getOutputArchive() {return outFile;}
+            @Override
             public String getDocEncoding()    {return docEnc;}
+            @Override
             public String getInputEncoding()  {return srcEnc;}
+            @Override
             public String getOutputEncoding() {return outEnc;}
+            @Override
             public ReplaceEntry[] getGlobalEntries() {return entries;}
         };
     }

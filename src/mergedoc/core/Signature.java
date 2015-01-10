@@ -135,8 +135,11 @@ public class Signature {
      * @return 等しい場合は true 
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
-        if (obj == null) return false; 
+        if (obj == null) {
+            return false;
+        } 
         return toString().equals(obj.toString());
     }
 
@@ -145,6 +148,7 @@ public class Signature {
      * @return ハッシュコード
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
         return toString().hashCode();
     }
@@ -154,6 +158,7 @@ public class Signature {
      * @return 属するクラス名#メソッド名(引数型,,,)
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
         return shortClassName + "#" + methodName + arguments;
     }

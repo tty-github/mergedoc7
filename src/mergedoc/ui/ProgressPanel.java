@@ -71,6 +71,7 @@ public class ProgressPanel extends JPanel {
     public void setMaximum(int max) {
         progressBar.setMaximum(max);
         SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 progressBar.setIndeterminate(false);
             }
@@ -84,10 +85,13 @@ public class ProgressPanel extends JPanel {
      */
     public void addListText(final String text) {
         SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 int value = progressBar.getValue() + 1;
                 progressBar.setValue(value);
-                if (value > 1) textArea.append("\n");
+                if (value > 1) {
+                    textArea.append("\n");
+                }
                 textArea.append(text);
             }
         });
@@ -100,6 +104,7 @@ public class ProgressPanel extends JPanel {
      */    
     public void setBarText(final String text) {
         SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 progressBar.setIndeterminate(false);
                 progressBar.setString(text);

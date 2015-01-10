@@ -92,6 +92,7 @@ public class PreviewScrollPane extends JScrollPane {
         final JScrollBar bar = getVerticalScrollBar();
         final int pos = bar.getValue();
         SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 bar.setValue(pos);
             }

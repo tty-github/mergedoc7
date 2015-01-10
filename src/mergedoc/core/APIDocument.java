@@ -84,12 +84,15 @@ public class APIDocument {
         public CachedFile(String path) {
             super(path);
         }
+        @Override
         public File[] listFiles() {
             File dir = getParentFile();
             if (!dir.equals(cachedDir)) {
                 cachedDir = dir;
                 cachedFiles = dir.listFiles();
-                if (cachedFiles == null) cachedFiles = EMPTY_FILES;
+                if (cachedFiles == null) {
+                    cachedFiles = EMPTY_FILES;
+                }
             }
             return cachedFiles;
         }
@@ -105,7 +108,9 @@ public class APIDocument {
     private void load(File docDir, File docFile, String charsetName) throws IOException {
 
         // 存在しない場合は何もしない
-        if (!docFile.exists()) return;
+        if (!docFile.exists()) {
+            return;
+        }
         
         // API ドキュメント読み込み
         InputStream is = new FileInputStream(docFile);

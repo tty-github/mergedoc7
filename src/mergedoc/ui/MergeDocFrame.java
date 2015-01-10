@@ -141,8 +141,10 @@ public class MergeDocFrame extends JFrame {
 
         // 実行ボタンのリスナー
         buttonBar.setRunListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 mergeExecutor.submit(new Runnable(){
+                    @Override
                     public void run() {execute();}
                 });
             }
@@ -150,6 +152,7 @@ public class MergeDocFrame extends JFrame {
 
         // キャンセルボタンのリスナー
         buttonBar.setCancelListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 buttonBar.setEnabled(false);
                 mergeManager.getWorkingState().cancel();
@@ -158,6 +161,7 @@ public class MergeDocFrame extends JFrame {
 
         // 戻るボタンのリスナー
         buttonBar.setBackListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 back();
             }
@@ -165,6 +169,7 @@ public class MergeDocFrame extends JFrame {
 
         // 終了ボタンのリスナー
         buttonBar.setEndListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 end();
             }
@@ -172,6 +177,7 @@ public class MergeDocFrame extends JFrame {
 
         // 進捗表示のリスナー
         mergeManager.setChangeListener(new ChangeListener() {
+            @Override
             public void stateChanged(ChangeEvent e) {
                 WorkingState state = mergeManager.getWorkingState();
                 progressPanel.addListText(state.getWorkingText());
@@ -181,6 +187,7 @@ public class MergeDocFrame extends JFrame {
         
         // ウィンドウリサイズ後のリスナー
         addComponentListener(new ComponentAdapter() {
+            @Override
             public void componentResized(ComponentEvent e) {
                 persistent();
             }
@@ -188,6 +195,7 @@ public class MergeDocFrame extends JFrame {
         
         // ウィンドウクローズ時のリスナー
         addWindowListener(new WindowAdapter(){
+            @Override
             public void windowClosing(WindowEvent e) {
                 end();
             }
@@ -211,6 +219,7 @@ public class MergeDocFrame extends JFrame {
 
         // 進捗パネル表示
         SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 mainPanel.remove(preferencePanel);
                 progressPanel.init();
@@ -297,6 +306,7 @@ public class MergeDocFrame extends JFrame {
     private void back() {
         buttonBar.setState(buttonBar.INIT_STATE);
         SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 mainPanel.remove(progressPanel);
                 mainPanel.add(preferencePanel);
@@ -347,8 +357,10 @@ public class MergeDocFrame extends JFrame {
      * @param   title フレームのタイトル
      * @see     Frame#setTitle(String)
      */
+    @Override
     public void setTitle(final String title) {
         SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
             	MergeDocFrame.super.setTitle("MergeDoc - " + title);
             }

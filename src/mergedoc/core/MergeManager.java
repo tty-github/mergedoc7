@@ -74,17 +74,22 @@ public class MergeManager {
         // エントリー数取得は数秒かかるので事前に別スレッドでを開始しておく
         entrySizeFuture = entrySizeGetExecutor.submit(new Callable<Integer>() {
             
+            @Override
             public Integer call() throws Exception {
                 ArchiveInputStream is = null;
                 try {
                     is = ArchiveInputStream.create(pref.getInputArchive());
                     int size = 0;
-                    for (; is.getNextEntry() != null; size++);
+                    for (; is.getNextEntry() != null; size++) {
+                        ;
+                    }
                     return size;
                 } catch (Exception e) {
                     return 0;
                 } finally {
-                    if (is != null) is.close();
+                    if (is != null) {
+                        is.close();
+                    }
                 }
             }
         });
@@ -156,7 +161,9 @@ public class MergeManager {
      */
     public void execute() throws MergeDocException, SAXException, IOException {
         
-        if (workingState.isCanceled()) return;
+        if (workingState.isCanceled()) {
+            return;
+        }
         ArchiveInputStream in = null;
         ZipOutputStream out = null;
 
@@ -174,8 +181,12 @@ public class MergeManager {
 
         } finally {
 
-            if (in != null) in.close();
-            if (out != null) out.close();
+            if (in != null) {
+                in.close();
+            }
+            if (out != null) {
+                out.close();
+            }
         }
     }
 
@@ -199,7 +210,9 @@ public class MergeManager {
         ArchiveInputStream.Entry inEntry = null;
         while ((inEntry = in.getNextEntry()) != null) {
 
-            if (workingState.isCanceled()) return;
+            if (workingState.isCanceled()) {
+                return;
+            }
             String entryName = inEntry.getName();
             out.putNextEntry(new ZipEntry(entryName));
             workingState.changeWorkingText(entryName);

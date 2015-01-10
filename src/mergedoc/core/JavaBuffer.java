@@ -160,7 +160,9 @@ public class JavaBuffer {
                     }
                 }
             }
-            if (i >= last) break;
+            if (i >= last) {
+                break;
+            }
 
             // 型宣言位置を見つける
             // class|interface|@interface|enum 
@@ -200,11 +202,15 @@ public class JavaBuffer {
             // クラス宣言に Javadoc コメントが無ければ、ダミー挿入位置リストに追加
             for (int j = declaPos; j > 0; j--) {
                 
-                if (c[j-1] == '*' && c[j] == '/') break;
+                if (c[j-1] == '*' && c[j] == '/') {
+                    break;
+                }
                 if (c[j] == ';' || c[j] == '}' || c[j] == '{') {
                     
                     for (int k = j - 1; k > 0; k--) {
-                        if (c[k-1] == '/' && c[k] == '/') break;
+                        if (c[k-1] == '/' && c[k] == '/') {
+                            break;
+                        }
                         if (c[k] == '\n') {
                             
                             for (int l = j + 1; l < i; l++) {
@@ -339,8 +345,12 @@ public class JavaBuffer {
         int nestLevel = 1;
         for (int i = currentToEnd.indexOf('{') + 1; i < currentToEnd.length(); i++) {
             char c = currentToEnd.charAt(i);
-            if (c == '{') nestLevel++; 
-            if (c == '}') nestLevel--;
+            if (c == '{') {
+                nestLevel++;
+            } 
+            if (c == '}') {
+                nestLevel--;
+            }
             if (nestLevel == 0) {
                 return commentMatcher.end() + i;
             }
@@ -360,7 +370,9 @@ public class JavaBuffer {
      */
     public void setLocalizedComment(Signature sig, Comment comment) {
     	
-        if (comment == null) return;
+        if (comment == null) {
+            return;
+        }
         String srcComment = getSourceComment();
         comment.setSourceBody(srcComment);
         String docComment = comment.buildComment();
@@ -370,7 +382,9 @@ public class JavaBuffer {
     	//log.debug("英語 Java ソースコメント:\n" + srcComment);
     	//log.debug("日本語 API ドキュメントコメント:\n" + docComment + "\n--------------");
         
-        if (docComment == null || docComment.length() == 0) return;
+        if (docComment == null || docComment.length() == 0) {
+            return;
+        }
         docComment = FastStringUtils.quoteReplacement(docComment);
         commentMatcher.appendReplacement(outputBuffer, docComment);
     }

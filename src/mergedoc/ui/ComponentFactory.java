@@ -23,9 +23,13 @@ public class ComponentFactory {
 
     /** このアプリケーションがサポートするコンポーネント最大サイズ（不変） */
     private static final Dimension maxDimension = new Dimension(3200, 2400) {
+        @Override
         public void setSize(Dimension d) {}
+        @Override
         public void setSize(double width, double height) {}
+        @Override
         public void setSize(int width, int height) {}
+        @Override
         public void setSize(Dimension2D d) {}
     };
 
@@ -112,14 +116,18 @@ public class ComponentFactory {
                 for (int j = 0; j < model.getSize(); j++) {
                     width = metrics.stringWidth(model.getElementAt(j).toString());
                     width += 30; //プルダウン部分を加算
-                    if (width > maxWidth ) maxWidth = width;
+                    if (width > maxWidth ) {
+                        maxWidth = width;
+                    }
                 }
             } else {
                 throw new IllegalArgumentException(
                 "引数は JLabel[] または JComboBox[] でなければなりません。");
             }
 
-            if (width > maxWidth ) maxWidth = width;
+            if (width > maxWidth ) {
+                maxWidth = width;
+            }
         }
         
         for (JComponent compo : compos) {

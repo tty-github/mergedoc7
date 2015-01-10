@@ -26,6 +26,7 @@ public class ReplaceHandler extends AbstractHandler {
      * 置換エントリを処理します。
      * @param entry 置換エントリ
      */
+    @Override
     protected void handle(ReplaceEntry entry) {
         source = entry.replace(source);
     }
