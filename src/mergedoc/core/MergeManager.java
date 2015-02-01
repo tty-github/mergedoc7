@@ -16,6 +16,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -37,7 +39,7 @@ import org.xml.sax.SAXException;
  * @author Shinji Kashihara
  */
 public class MergeManager {
-	
+
 	/** ロガー */
 	private static final Log log = LogFactory.getLog(MergeManager.class);
 
@@ -67,13 +69,13 @@ public class MergeManager {
      * @param pref マージ設定
      */
     public void setPreference(final Preference pref) {
-        
+
         this.pref = pref;
         workingState.initialize();
-        
+
         // エントリー数取得は数秒かかるので事前に別スレッドでを開始しておく
         entrySizeFuture = entrySizeGetExecutor.submit(new Callable<Integer>() {
-            
+
             @Override
             public Integer call() throws Exception {
                 ArchiveInputStream is = null;
@@ -99,8 +101,8 @@ public class MergeManager {
      * マージ可能な状態か検証します。
      * @throws MergeDocException マージ不可能な状態の場合
      * @throws IOException 入出力例外が発生した場合
-     * @throws ExecutionException 
-     * @throws InterruptedException 
+     * @throws ExecutionException
+     * @throws InterruptedException
      */
     public void validate() throws MergeDocException, IOException, InterruptedException, ExecutionException {
 
@@ -160,7 +162,7 @@ public class MergeManager {
      * @throws IOException 入出力例外が発生した場合
      */
     public void execute() throws MergeDocException, SAXException, IOException {
-        
+
         if (workingState.isCanceled()) {
             return;
         }
@@ -194,8 +196,8 @@ public class MergeManager {
      * アーカイブ入力ストリームから順次エントリを読み込み、Java ソースの場合は
      * API ドキュメントとマージし、それ以外のファイルはそのまま ZIP
      * 出力ストリームに書き込みます。
-     * 
-     * @param  in  アーカイブ入力ストリーム 
+     *
+     * @param  in  アーカイブ入力ストリーム
      * @param  out ZIP 出力ストリーム
      * @throws MergeDocException コンフィグ情報の取得に失敗した場合
      * @throws SAXException SAX パース例外が発生した場合
@@ -221,7 +223,7 @@ public class MergeManager {
             //if (!entryName.equals("java/lang/String.java")) continue;
             //if (!entryName.endsWith("/SuppressWarnings.java")) continue;
             //if (!entryName.endsWith("/System.java")) continue;
-            
+
             if (entryName.endsWith(".java") && !entryName.endsWith("/package-info.java")) {
 
                 // Java ソースの場合
@@ -232,22 +234,26 @@ public class MergeManager {
                 source = FastStringUtils.untabify(source);
 
                 // Java ソースを API ドキュメントとマージ
-                String result = merger.merge(source);
-                String className = merger.getMergedClassName();
-                if (className != null) {
-                    result = doFilter(className, result);
+                Pattern classPat = PatternCache.getPattern(".*/(.*)\\.java");
+                Matcher classMat = classPat.matcher(entryName);
+                if (classMat.find()) {
+                    String result = merger.merge(source, classMat.group(1));
+                    String className = merger.getMergedClassName();
+                    if (className != null) {
+                        result = doFilter(className, result);
+                    }
+                    byte[] resultBuf = result.getBytes(pref.getOutputEncoding());
+                    out.write(resultBuf);
+                } else {
+                    copyStream(in, out);
                 }
-                byte[] resultBuf = result.getBytes(pref.getOutputEncoding());
-                out.write(resultBuf);
-
             } else {
-
                 // Java ソース以外の場合
                 copyStream(in, out);
             }
         }
     }
-    
+
     /**
      * 入力ストリームを出力ストリームにコピーします。
      * @param in 入力ストリーム

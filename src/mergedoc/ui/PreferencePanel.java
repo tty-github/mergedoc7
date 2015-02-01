@@ -39,13 +39,13 @@ public class PreferencePanel extends JPanel {
 	/** ロガー */
 	private static final Log log = LogFactory.getLog(PreferencePanel.class);
 
-	
+
 	/** 基本設定パネル：API ドキュメントディレクトリ ファイル選択フィールド */
     private FileChooserField docField = new FileChooserField();
 
     /** 基本設定パネル：入力ソースアーカイブファイル ファイル選択フィールド */
     private FileChooserField srcField = new FileChooserField();
-    
+
     /** 基本設定パネル：出力ソースアーカイブファイル ファイル選択フィールド */
     private FileChooserField outField = new FileChooserField();
 
@@ -61,7 +61,7 @@ public class PreferencePanel extends JPanel {
 
 
     /**
-     * コンストラクタです。 
+     * コンストラクタです。
      * @throws MergeDocException 設定ファイルが取得できない場合
      */
     public PreferencePanel() throws MergeDocException {
@@ -100,12 +100,12 @@ public class PreferencePanel extends JPanel {
         JComboBox outCombo = outField.getComboBox();
         docCombo.addItem(FileChooserField.ENCODING_AUTO);
         srcCombo.addItem(FileChooserField.ENCODING_AUTO);
-        docCombo.setSelectedItem("EUC-JP");
+        docCombo.setSelectedItem("UTF-8");
         srcCombo.setSelectedItem(FileChooserField.ENCODING_DEFAULT);
         outCombo.setSelectedItem(FileChooserField.ENCODING_DEFAULT);
         JComboBox[] combos = {docCombo, srcCombo, outCombo};
         ComponentFactory.ensureMaxFontWidth(combos);
-        
+
         // ファイルチューザの設定
         docField.setSelectionMode(FileChooserField.DIRECTORIES);
         srcField.setSelectionMode(FileChooserField.ZIP_TGZ_FILES);
@@ -116,7 +116,7 @@ public class PreferencePanel extends JPanel {
                 resolveArchivePath(docField.getFile());
             }
         });
-        
+
         // 上部パネル作成
         JPanel panel = new TitledPanel("基本設定");
         panel.add(docField);
@@ -150,7 +150,7 @@ public class PreferencePanel extends JPanel {
         // 未設定時のデフォルト設定
         String docPath = docField.getFile().getPath();
         if (docPath.equals("")) {
-            
+
             File home = new File(System.getProperty("java.home"));
             if (home.getName().equals("jre") ) {
                 home = home.getParentFile();
@@ -161,7 +161,7 @@ public class PreferencePanel extends JPanel {
                 resolveArchivePath(home);
             }
         }
-        
+
         return panel;
     }
 
@@ -171,7 +171,7 @@ public class PreferencePanel extends JPanel {
      * @throws MergeDocException 設定ファイルが取得できない場合
      */
     private JComponent createLowerPanel() throws MergeDocException {
-        
+
         // チェックボックス配置ペインを作成
         JPanel checkPanel = new JPanel();
         checkPanel.setLayout(new BoxLayout(checkPanel, BoxLayout.Y_AXIS));
@@ -189,10 +189,10 @@ public class PreferencePanel extends JPanel {
         }
         JScrollPane checkScrollPane = ComponentFactory.createScrollPane(checkPanel);
         checkScrollPane.getVerticalScrollBar().setUnitIncrement(10);
-        
+
         // プレビューペインを作成
         previewScrollPane = new PreviewScrollPane();
-        
+
         // スプリットペインに配置
         splitPane.setBorder(BorderFactory.createEmptyBorder());
         splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
@@ -268,9 +268,9 @@ public class PreferencePanel extends JPanel {
      * @return API ドキュメントディレクトリ
      */
     private File searchDocDirectory(File baseDir) {
-        
+
         File dir = null;
-        
+
         for (File file : baseDir.listFiles()) {
             if (file.isFile()) {
                 if (file.getName().equals("allclasses-frame.html")) {
@@ -285,7 +285,7 @@ public class PreferencePanel extends JPanel {
         }
         return dir;
     }
-    
+
     /**
      * ファイル選択フィールドに設定ファイルから取得した値をセットします。
      * @param field ファイル選択フィールド
@@ -315,7 +315,7 @@ public class PreferencePanel extends JPanel {
      * @return 選択された置換エントリの配列
      */
     public ReplaceEntry[] getSelectedEntries() {
-        
+
         List<ReplaceEntry> enables = new LinkedList<ReplaceEntry>();
         for (EntryCheckBox cb : entryCheckList) {
             if (cb.isSelected()) {
@@ -359,7 +359,7 @@ public class PreferencePanel extends JPanel {
             public ReplaceEntry[] getGlobalEntries() {return entries;}
         };
     }
-    
+
     /**
      * このパネルの設定内容を Persister にセットします。
      * @throws Persister にセット出来なかった場合
