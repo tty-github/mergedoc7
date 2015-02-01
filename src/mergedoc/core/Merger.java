@@ -18,13 +18,13 @@ import org.apache.commons.logging.LogFactory;
  * @author Shinji Kashihara
  */
 public class Merger {
-	
+
 	/** ロガー */
 	private static final Log log = LogFactory.getLog(Merger.class);
 
 	/** クラス種類（class|interface|@interface|enum） */
 	private String classKind;
-	
+
     /** クラス名（パッケージを含む） */
     private String className;
 
@@ -50,7 +50,7 @@ public class Merger {
     public void setDocEncoding(String docEncoding) {
         this.docEncoding = docEncoding;
     }
-    
+
     /**
      * Java ソースと Javadoc コメントをマージします。
      * Java ソースに package 宣言が無い場合や、対応する API
@@ -59,9 +59,9 @@ public class Merger {
      * @return マージ後の Java ソース文字列
      * @throws IOException 入出力例外が発生した場合
      */
-    public String merge(String source) throws IOException {
+    public String merge(String source, String targetClassName) throws IOException {
 
-        scanClassName(source);
+        scanClassName(source, targetClassName);
         if (className == null) {
             return source;
         }
@@ -86,27 +86,31 @@ public class Merger {
      * package 宣言が無い場合は常に null になります。
      * @param source Java ソース文字列
      */
-    private void scanClassName(String source) {
-        
+    private void scanClassName(String source, String className) {
+
         Pattern pkgPat = PatternCache.getPattern("(?m)^\\s*package\\s+([\\w\\.]+)");
         Matcher pkgMat = pkgPat.matcher(source);
 
         if (pkgMat.find()) {
+            // コメント中にクラス宣言のコードがある場合を考慮して、簡易的にコメントを削除
+            String nonCommentSource = PatternCache.getPattern("(?s)/\\*.*?\\*/").matcher(source).replaceAll(" ");
             String packageName = pkgMat.group(1);
             String clsReg = "(?m)^(|[\\w\\s]*?\\s+|.*?\\*/\\s+)(class|interface|@interface|enum)\\s+(\\w+)";
             Pattern clsPat = PatternCache.getPattern(clsReg);
-            Matcher clsMat = clsPat.matcher(source);
-            if (clsMat.find()) {
-            	classKind = clsMat.group(2);
-                className = packageName + "." + clsMat.group(3);
-                return;
+            Matcher clsMat = clsPat.matcher(nonCommentSource);
+            while (clsMat.find()) {
+                this.classKind = clsMat.group(2);
+                this.className = packageName + "." + clsMat.group(3);
+                if(this.className.endsWith("." + className)){
+                    return;
+                }
             }
-            throw new IllegalArgumentException(
-                    "Java ソースからクラス名を取得することが出来ませんでした。\n" +
-                    source);
         }
+        throw new IllegalArgumentException(
+                "Java ソースからクラス名を取得することが出来ませんでした。\n" +
+                source);
     }
-    
+
     /**
      * 直前のマージした Java ソースのクラス名（パッケージを含む）を取得します。
      * @return クラス名（パッケージを含む）
