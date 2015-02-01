@@ -19,7 +19,7 @@ import org.apache.commons.logging.LogFactory;
  * @author Shinji Kashihara
  */
 public class JavaBuffer {
-
+	
 	/** ロガー */
 	private static final Log log = LogFactory.getLog(JavaBuffer.class);
 
@@ -28,20 +28,20 @@ public class JavaBuffer {
 
     /** クラス名 */
     private final String className;
-
+    
     /** Java ソース文字列 */
     private final String source;
 
     /** ブロックコメントのパターン */
     private static final Pattern commentPattern = PatternCache.getPattern(
-        "(?sm)^ *?/\\*\\*.*?\\*/ *?\\n?");
+        "(?sm)^ *?/\\*\\*.*?\\*/ *?\n");
 
     /** ブロックコメントのマッチャー */
     private final Matcher commentMatcher;
 
     /** 出力バッファ */
     private final StringBuffer outputBuffer = new StringBuffer();
-
+    
     /** クラス名と終了位置を保持するクラス */
     private static class ClassBlock {
         final String name;
@@ -54,7 +54,7 @@ public class JavaBuffer {
 
     /** ClassBlock スタック */
     private final Stack<ClassBlock> classStack = new Stack<ClassBlock>();
-
+    
     /** インナークラスコメントが無いことを示す一時的なコメント */
     private static final String DUMMY_COMMENT =
         "/** Empty comment. " + JavaBuffer.class.getName() + ". */\n";
@@ -72,11 +72,11 @@ public class JavaBuffer {
         this.source = setupDummyComment(javaSource);
         commentMatcher = commentPattern.matcher(source);
 
-        // トップクラスをクラススタックにプッシュ
+        // トップクラスをクラススタックにプッシュ        
         ClassBlock cb = new ClassBlock(className, source.length());
         classStack.push(cb);
     }
-
+    
     /**
      * Javadoc コメントが無いクラス宣言にダミーコメントを挿入します。
      * <p>
@@ -88,7 +88,7 @@ public class JavaBuffer {
      * ここでダミー Javadoc コメントを挿入します（後で削除）。なお、Javadoc
      * コメントが無い場合は Javadoc API ドキュメントも存在しません。
      * <pre>
-     * JDK1.4 javax.swing.JEditorPane のインナークラス である
+     * JDK1.4 javax.swing.JEditorPane のインナークラス である 
      *        JEditorPaneAccessibleHypertextSupport.HTMLLink など
      * </pre>
      * <p>
@@ -96,10 +96,10 @@ public class JavaBuffer {
      * /* で始まるクラスコメントがありますが、Javadoc コメントでないのに
      * Javadoc API ドキュメントが存在します。今のところ、そのようなコメントは
      * 日本語化の対象とはなりません。
-     *
+     * 
      * @param src Java ソース文字列
      * @return ダミーコメントを挿入したソース文字列
-     */
+     */    
     private String setupDummyComment(String src) {
 
         // トップクラスは Javadoc コメントとシグネチャの間に行コメントがある
@@ -123,7 +123,7 @@ public class JavaBuffer {
         // 下記の方法ではコメント部分を厳密に判定しているため、上記方法とは
         // 異なり Javadoc コメントとクラス宣言の間に行コメントが存在する場合も
         // 正常に動作する。
-        //
+        // 
         //   トップクラス宣言の前に行コメントがあるクラス
         //     → JDK1.4 java.net.Authenticator など
         //   インナークラス宣言の前に行コメントがあるクラス
@@ -134,11 +134,11 @@ public class JavaBuffer {
         int last = c.length - 1;
         List<Integer> dummyInsertPositions = new ArrayList<Integer>();
         int declareMaxLength = 12;
-
+        
         for (int i = declareMaxLength; i <= last; i++) {
 
             if (c[i-1] == '/' && c[i] == '*') {
-            	// ブロックコメントを読み飛ばし
+            	// ブロックコメントを読み飛ばし 
                 for (i++; i <= last; i++) {
                     if (c[i-1] == '*' && c[i] == '/') {
                         break;
@@ -165,10 +165,10 @@ public class JavaBuffer {
             }
 
             // 型宣言位置を見つける
-            // class|interface|@interface|enum
+            // class|interface|@interface|enum 
             int declaPos = -1;
             if (c[i] == ' ' || c[i] == '\n' || c[i] == '<') {
-
+            	
                 if (c[i-5] == 'c' && c[i-4] == 'l' && c[i-3] == 'a' &&
                     c[i-2] == 's' && c[i-1] == 's')
                 {
@@ -201,18 +201,18 @@ public class JavaBuffer {
 
             // クラス宣言に Javadoc コメントが無ければ、ダミー挿入位置リストに追加
             for (int j = declaPos; j > 0; j--) {
-
+                
                 if (c[j-1] == '*' && c[j] == '/') {
                     break;
                 }
                 if (c[j] == ';' || c[j] == '}' || c[j] == '{') {
-
+                    
                     for (int k = j - 1; k > 0; k--) {
                         if (c[k-1] == '/' && c[k] == '/') {
                             break;
                         }
                         if (c[k] == '\n') {
-
+                            
                             for (int l = j + 1; l < i; l++) {
                                 if (c[l] == '\n') {
                                     dummyInsertPositions.add(l + 1);
@@ -235,13 +235,13 @@ public class JavaBuffer {
         }
         return sb.toString();
     }
-
+    
     /**
      * 次のブロックコメントがあるか判定します。
      * ある場合は現在位置をブロックコメントに移動します。
      * ブロックコメントが連続している場合は最後のブロックコメントが有効になります。
      * @return 次のブロックコメントがある場合は true
-     */
+     */    
     public boolean nextComment() {
 
         while (commentMatcher.find()) {
@@ -253,7 +253,7 @@ public class JavaBuffer {
             if (FastStringUtils.matches(sourceComment, "\\s*/\\*+/\\s*\n")) {
                 continue;
             }
-
+            
             // ダミーコメントの場合は削除して次へ
             if (sourceComment.contains(DUMMY_COMMENT)) {
                 getSignature(); //クラススタック操作のため呼び出す
@@ -270,12 +270,12 @@ public class JavaBuffer {
                     continue;
                 }
             }
-
+            
             return true;
         }
         return false;
     }
-
+    
     /**
      * 現在位置のブロックコメントを取得します。
      * @return 現在位置のブロックコメント
@@ -283,25 +283,25 @@ public class JavaBuffer {
     private String getSourceComment() {
         return commentMatcher.group();
     }
-
+    
     /**
      * 現在位置のシグネチャを取得します。
      * @return シグネチャ。取得できない場合は null。
-     */
+     */    
     public Signature getSignature() {
 
         int commentEndPos = commentMatcher.end();
         String commentEndToEOF = source.substring(commentEndPos, source.length());
-
+        
         // シグネチャを取得しやすくするためにアノテーション宣言を除去
         commentEndToEOF = FastStringUtils.replaceFirst(
         		commentEndToEOF, "(?s)^(\\s*@[\\w]+\\s*\\(.*?\\))*\\s*", "");
-
+        
         Pattern sigPattern = PatternCache.getPattern("(?s)(.+?)(throws|\\{|\\=|;|,\\s*/\\*|\\})");
         Matcher sigMatcher = sigPattern.matcher(commentEndToEOF);
 
         if (sigMatcher.find()) {
-
+            
             // インナークラスの終端より後の場合はクラススタックを減らす
             ClassBlock classBlock = classStack.peek();
             while (commentEndPos > classBlock.end && classStack.size() > 1) {
@@ -328,60 +328,40 @@ public class JavaBuffer {
 
             return sig;
         }
-
+        
         log.warn("Javadoc コメントの後のシグネチャを取得できませんでした。\n" +
         	commentEndToEOF);
         return null;
     }
-
+    
     /**
      * インナークラスの終了位置を取得します。
      * @param currentToEnd ソースの現在位置から最後までの文字列
      * @param iClassName インナークラス名
      * @return インナークラスの終了位置
-     */
+     */    
     private int searchEndOfInner(String currentToEnd, String iClassName) {
 
         int nestLevel = 1;
-        // コメント中に { があり、}との整合性がとれない場合があるため、
-        // コメント内かどうかを判定する 例：java.util.Spliterators
-        // TODO 上のソースのようにコメントの読み飛ばす
-        boolean inComment = false;
-        int length = currentToEnd.length();
-        for (int i = currentToEnd.indexOf('{') + 1; i < length; i++) {
+        for (int i = currentToEnd.indexOf('{') + 1; i < currentToEnd.length(); i++) {
             char c = currentToEnd.charAt(i);
-            if(inComment == false) {
-                if (c == '{') {
-                    nestLevel++;
-                }
-                if (c == '}') {
-                    nestLevel--;
-                }
-            }
-            if (c == '/') {
-                if(inComment == false) {
-                    if(i + 1 < length) {
-                        if(currentToEnd.charAt(i + 1) == '*') {
-                            inComment = true;
-                        }
-                    }
-                }else {
-                    if(currentToEnd.charAt(i - 1) == '*') {
-                        inComment = false;
-                    }
-                }
+            if (c == '{') {
+                nestLevel++;
+            } 
+            if (c == '}') {
+                nestLevel--;
             }
             if (nestLevel == 0) {
                 return commentMatcher.end() + i;
             }
         }
-
+        
         log.warn(
             "インナークラス " + className + "#" + iClassName +
             " の終了位置が検出できませんでした。");
         return -1;
     }
-
+    
     /**
      * 現在位置にローカライズされたブロックコメントをセットします。
      * 指定されたブロックコメントが null の場合は無視します。
@@ -389,19 +369,19 @@ public class JavaBuffer {
      * @param comment ローカライズされたブロックコメント
      */
     public void setLocalizedComment(Signature sig, Comment comment) {
-
+    	
         if (comment == null) {
             return;
         }
         String srcComment = getSourceComment();
         comment.setSourceBody(srcComment);
         String docComment = comment.buildComment();
-
+        
         // debug setLocalizedComment シグネチャ、コメントの確認
     	//log.debug("シグネチャ: " + sig);
     	//log.debug("英語 Java ソースコメント:\n" + srcComment);
     	//log.debug("日本語 API ドキュメントコメント:\n" + docComment + "\n--------------");
-
+        
         if (docComment == null || docComment.length() == 0) {
             return;
         }
