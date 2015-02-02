@@ -21,7 +21,7 @@ public class ReplaceHandler extends AbstractHandler {
     public ReplaceHandler(String source) {
         this.source = source;
     }
-    
+
     /**
      * 置換エントリを処理します。
      * @param entry 置換エントリ
@@ -30,7 +30,7 @@ public class ReplaceHandler extends AbstractHandler {
     protected void handle(ReplaceEntry entry) {
         source = entry.replace(source);
     }
-    
+
     /**
      * 置換後のソース文字列を取得します。
      * @return 置換後のソース文字列

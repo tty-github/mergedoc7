@@ -36,11 +36,10 @@ import org.apache.commons.logging.LogFactory;
  */
 public class PreferencePanel extends JPanel {
 
-	/** ロガー */
-	private static final Log log = LogFactory.getLog(PreferencePanel.class);
+    /** ロガー */
+    private static final Log log = LogFactory.getLog(PreferencePanel.class);
 
-
-	/** 基本設定パネル：API ドキュメントディレクトリ ファイル選択フィールド */
+    /** 基本設定パネル：API ドキュメントディレクトリ ファイル選択フィールド */
     private FileChooserField docField = new FileChooserField();
 
     /** 基本設定パネル：入力ソースアーカイブファイル ファイル選択フィールド */
@@ -48,7 +47,6 @@ public class PreferencePanel extends JPanel {
 
     /** 基本設定パネル：出力ソースアーカイブファイル ファイル選択フィールド */
     private FileChooserField outField = new FileChooserField();
-
 
     /** 詳細設定パネル：スプリットペイン */
     private JSplitPane splitPane = new JSplitPane();
@@ -58,7 +56,6 @@ public class PreferencePanel extends JPanel {
 
     /** 詳細設定パネル：プレビュー スクロールペイン */
     private PreviewScrollPane previewScrollPane;
-
 
     /**
      * コンストラクタです。
@@ -91,7 +88,7 @@ public class PreferencePanel extends JPanel {
         docLabel.setText("API ドキュメントディレクトリ");
         srcLabel.setText("入力ソースアーカイブファイル");
         outLabel.setText("出力ソースアーカイブファイル");
-        JLabel[] labels = {docLabel, srcLabel, outLabel};
+        JLabel[] labels = { docLabel, srcLabel, outLabel };
         ComponentFactory.ensureMaxFontWidth(labels);
 
         // コンボ設定
@@ -103,7 +100,7 @@ public class PreferencePanel extends JPanel {
         docCombo.setSelectedItem("UTF-8");
         srcCombo.setSelectedItem(FileChooserField.ENCODING_DEFAULT);
         outCombo.setSelectedItem(FileChooserField.ENCODING_DEFAULT);
-        JComboBox[] combos = {docCombo, srcCombo, outCombo};
+        JComboBox[] combos = { docCombo, srcCombo, outCombo };
         ComponentFactory.ensureMaxFontWidth(combos);
 
         // ファイルチューザの設定
@@ -129,9 +126,7 @@ public class PreferencePanel extends JPanel {
         if (targetStr != null) {
             File targetDir = new File(targetStr);
             if (!targetDir.exists() || targetDir.isFile()) {
-                throw new MergeDocException(
-                    "オプション " + OPTION_KEY + " に指定された値 " + targetStr +
-                    " は\n存在しないかディレクトリではありません。");
+                throw new MergeDocException("オプション " + OPTION_KEY + " に指定された値 " + targetStr + " は\n存在しないかディレクトリではありません。");
             }
             File docDir = searchDocDirectory(targetDir);
             if (docDir != null) {
@@ -152,7 +147,7 @@ public class PreferencePanel extends JPanel {
         if (docPath.equals("")) {
 
             File home = new File(System.getProperty("java.home"));
-            if (home.getName().equals("jre") ) {
+            if (home.getName().equals("jre")) {
                 home = home.getParentFile();
             }
             File docDir = new File(home, "docs/ja/api");
@@ -178,7 +173,7 @@ public class PreferencePanel extends JPanel {
         List<ReplaceEntry> list = ConfigManager.getInstance().getGlobalEntries();
         for (ReplaceEntry entry : list) {
             EntryCheckBox cb = new EntryCheckBox(entry);
-            cb.addActionListener(new ActionListener(){
+            cb.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     previewScrollPane.updatePreview(entryCheckList);
@@ -293,9 +288,7 @@ public class PreferencePanel extends JPanel {
      * @param charKey 文字セットを示す設定ファイルのキー
      * @throws MergeDocException 設定ファイルが取得できない場合
      */
-    private void loadPersister(FileChooserField field, Persister.Key pathKey,
-        Persister.Key charKey) throws MergeDocException
-    {
+    private void loadPersister(FileChooserField field, Persister.Key pathKey, Persister.Key charKey) throws MergeDocException {
         Persister psst = Persister.getInstance();
         if (field.getFile().getPath().equals("")) {
             String path = psst.getString(pathKey, "");
@@ -306,8 +299,7 @@ public class PreferencePanel extends JPanel {
         try {
             String enc = psst.getString(charKey);
             field.getComboBox().setSelectedItem(enc);
-        } catch (IllegalArgumentException e) {
-        }
+        } catch (IllegalArgumentException e) {}
     }
 
     /**
@@ -335,7 +327,7 @@ public class PreferencePanel extends JPanel {
 
         return new Preference() {
 
-            File docDir  = docField.getFile();
+            File docDir = docField.getFile();
             File srcFile = srcField.getFile();
             File outFile = outField.getFile();
             String docEnc = docField.getComboBox().getSelectedItem().toString();
@@ -344,19 +336,39 @@ public class PreferencePanel extends JPanel {
             ReplaceEntry[] entries = getSelectedEntries();
 
             @Override
-            public File getDocDirectory()  {return docDir;}
+            public File getDocDirectory() {
+                return docDir;
+            }
+
             @Override
-            public File getInputArchive()  {return srcFile;}
+            public File getInputArchive() {
+                return srcFile;
+            }
+
             @Override
-            public File getOutputArchive() {return outFile;}
+            public File getOutputArchive() {
+                return outFile;
+            }
+
             @Override
-            public String getDocEncoding()    {return docEnc;}
+            public String getDocEncoding() {
+                return docEnc;
+            }
+
             @Override
-            public String getInputEncoding()  {return srcEnc;}
+            public String getInputEncoding() {
+                return srcEnc;
+            }
+
             @Override
-            public String getOutputEncoding() {return outEnc;}
+            public String getOutputEncoding() {
+                return outEnc;
+            }
+
             @Override
-            public ReplaceEntry[] getGlobalEntries() {return entries;}
+            public ReplaceEntry[] getGlobalEntries() {
+                return entries;
+            }
         };
     }
 

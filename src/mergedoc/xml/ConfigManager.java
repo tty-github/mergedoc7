@@ -34,7 +34,7 @@ public class ConfigManager {
 
     /** コンフィグルートパス */
     private final File configRoot;
-    
+
     /** global.xml ファイル */
     private final File globalXML;
 
@@ -55,18 +55,17 @@ public class ConfigManager {
         URL url = getClass().getResource(globalXMLName);
         if (url == null) {
             throw new MergeDocException(globalXMLName + " が見つかりません。");
-        } 
+        }
         globalXML = new File(url.getPath());
-        
+
         String parent = null;
         try {
-        	// 空白やマルチバイト文字ディレクトリの対応
+            // 空白やマルチバイト文字ディレクトリの対応
             parent = URLDecoder.decode(globalXML.getParent(), "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-        }
+        } catch (UnsupportedEncodingException e) {}
         configRoot = new File(parent);
     }
-    
+
     /**
      * このクラスのシングルトンインスタンスを取得します。
      * 生成時の同期化は行われません。
@@ -87,7 +86,7 @@ public class ConfigManager {
     public SAXParser getSAXPerser() {
         return saxParser;
     }
-    
+
     /**
      * コンフィグルートの子相対パスを指定してファイルを取得します。
      * @param path コンフィグルートの子相対パス
@@ -96,7 +95,7 @@ public class ConfigManager {
     public File getFile(String path) {
         return new File(configRoot, path);
     }
-    
+
     /**
      * グローバル定義 XML の置換エントリリストを取得します。
      * @return グローバル定義 XML の置換エントリリスト
@@ -108,12 +107,11 @@ public class ConfigManager {
             saxParser.parse(globalXML, handler);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new MergeDocException(
-                globalXML.getName() + " のパースに失敗しました。\n" + e);
+            throw new MergeDocException(globalXML.getName() + " のパースに失敗しました。\n" + e);
         }
         return handler.getReplaceEntries();
     }
-    
+
     /**
      * プレビューテンプレートとなる文字列を取得します。
      * @return プレビューテンプレート文字列

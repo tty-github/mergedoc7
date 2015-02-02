@@ -13,16 +13,16 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * シグネチャです。
- * 
+ *
  * <p>このクラスは JDK のコレクションフレームワークで使用するために必要な
  * メソッド equals() や hashcode() が実装されています。
- * 
+ *
  * @author Shinji Kashihara
  */
 public class Signature {
-	
-	/** ロガー */
-	private static final Log log = LogFactory.getLog(Signature.class);
+
+    /** ロガー */
+    private static final Log log = LogFactory.getLog(Signature.class);
 
     /** 短い形式のクラス名（パッケージ部分除く） */
     private String shortClassName;
@@ -55,7 +55,7 @@ public class Signature {
                 sig = mat.replaceAll(" ");
             }
         }
-        
+
         // クラスの拡張部を除去
         sig = FastStringUtils.replaceFirst(sig, "\\s(extends|implements)\\s.*", " ");
 
@@ -64,7 +64,7 @@ public class Signature {
 
         // "(" ")" "," の前後にスペース付加
         sig = FastStringUtils.replaceAll(sig, "(\\(|\\)|,)", " $1 ");
-        
+
         // 複数スペースをスペース1個に置換
         sig = FastStringUtils.replaceAll(sig, " +", " ");
 
@@ -112,7 +112,7 @@ public class Signature {
         this.methodName = FastStringUtils.replaceFirst(sig, "(\\w+).*", "$1");
         this.arguments = FastStringUtils.replaceFirst(sig, "\\w+(.*)", "$1");
     }
-    
+
     /**
      * インナークラス宣言シグネチャか判定します．
      * @return インナークラス宣言シグネチャの場合は true
@@ -120,7 +120,7 @@ public class Signature {
     public boolean isDeclareInnerClass() {
         return declareInnerClass;
     }
-    
+
     /**
      * このシグネチャが属するクラス名を取得します．
      * @return このシグネチャが属するクラス名
@@ -128,18 +128,18 @@ public class Signature {
     public String getClassName() {
         return shortClassName;
     }
-    
+
     /**
      * 他のシグネチャと等しいか比較します．
      * @param obj 他のシグネチャ
-     * @return 等しい場合は true 
+     * @return 等しい場合は true
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;
-        } 
+        }
         return toString().equals(obj.toString());
     }
 

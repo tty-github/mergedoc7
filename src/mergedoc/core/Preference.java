@@ -9,7 +9,6 @@ import java.io.File;
 
 import mergedoc.xml.ReplaceEntry;
 
-
 /**
  * マージ設定インタフェースです。
  * @author Shinji Kashihara

@@ -26,7 +26,7 @@ import org.apache.tools.tar.TarInputStream;
  * <p>
  * 汎用的にするために将来 java.io.InputStream インタフェースを実装する可能性が
  * あります。
- * 
+ *
  * @author Shinji Kashihara
  */
 abstract public class ArchiveInputStream {
@@ -50,7 +50,7 @@ abstract public class ArchiveInputStream {
      * 指定されたファイルの形式を判定し、適切な ArchiveInputStream 実装クラスの
      * インスタンスを返します。今のところ、形式の判定は簡易的にファイル拡張子で
      * 行っており、データ内容での判定は一切行われません。
-     * 
+     *
      * @param  アーカイブファイル
      * @return アーカイブ入力ストリーム
      * @throws IOException ファイル形式が不正な場合
@@ -69,8 +69,7 @@ abstract public class ArchiveInputStream {
 
         } else {
 
-            throw new IllegalArgumentException(
-                "このファイル形式はサポートしません。\n" + fileName);
+            throw new IllegalArgumentException("このファイル形式はサポートしません。\n" + fileName);
         }
     }
 
@@ -98,7 +97,7 @@ abstract public class ArchiveInputStream {
      * 実行し、その結果を返します。代わりに in.read(b) が実行されな
      * いようにしてください。FilterInputStream の特定のサブクラスは、
      * 実際に使用されている実装方法に依存します。
-     * 
+     *
      * @param   b   データの読み込み先のバッファ
      * @return  バッファに読み込まれたバイトの合計数。ストリームの終わりに
      *          達してデータがない場合は -1
@@ -106,25 +105,28 @@ abstract public class ArchiveInputStream {
      * @see     InputStream#read(byte[], int, int)
      */
     abstract public int read(byte b[]) throws IOException;
-    
-    
+
     /**
      * Zip 入力ストリームのアーカイブ入力ストリーム実装クラスです。
      */
     private static class ZipStreamProxy extends ArchiveInputStream {
         ZipInputStream is;
+
         ZipStreamProxy(ZipInputStream is) {
             this.is = is;
         }
+
         @Override
         public void close() throws IOException {
             is.close();
         }
+
         @Override
         public Entry getNextEntry() throws IOException {
             ZipEntry entry = is.getNextEntry();
             return (entry != null) ? new ZipEntryProxy(entry) : null;
         }
+
         @Override
         public int read(byte[] b) throws IOException {
             return is.read(b);
@@ -136,32 +138,38 @@ abstract public class ArchiveInputStream {
      */
     private static class ZipEntryProxy implements Entry {
         ZipEntry entry;
+
         ZipEntryProxy(ZipEntry entry) {
             this.entry = entry;
         }
+
         @Override
         public String getName() {
             return entry.getName();
         }
     }
-    
+
     /**
      * Tar 入力ストリームのアーカイブ入力ストリーム実装クラスです。
      */
     private static class TarStreamProxy extends ArchiveInputStream {
         TarInputStream is;
+
         TarStreamProxy(TarInputStream is) {
             this.is = is;
         }
+
         @Override
         public void close() throws IOException {
             is.close();
         }
+
         @Override
         public Entry getNextEntry() throws IOException {
             TarEntry entry = is.getNextEntry();
             return (entry != null) ? new TarEntryProxy(entry) : null;
         }
+
         @Override
         public int read(byte[] b) throws IOException {
             return is.read(b);
@@ -173,9 +181,11 @@ abstract public class ArchiveInputStream {
      */
     private static class TarEntryProxy implements Entry {
         TarEntry entry;
+
         TarEntryProxy(TarEntry entry) {
             this.entry = entry;
         }
+
         @Override
         public String getName() {
             return entry.getName();

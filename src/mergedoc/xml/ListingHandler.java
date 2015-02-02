@@ -8,7 +8,6 @@ package mergedoc.xml;
 import java.util.LinkedList;
 import java.util.List;
 
-
 /**
  * 置換エントリのリストを作成するハンドラです。
  * @author Shinji Kashihara
@@ -23,7 +22,7 @@ public class ListingHandler extends AbstractHandler {
      */
     public ListingHandler() {
     }
-    
+
     /**
      * 置換エントリを処理します。
      * @param entry 置換エントリ
@@ -32,7 +31,7 @@ public class ListingHandler extends AbstractHandler {
     protected void handle(ReplaceEntry entry) {
         replaceEntries.add(entry);
     }
-    
+
     /**
      * 置換エントリのリストを取得します。
      * @return 置換エントリのリスト

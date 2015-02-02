@@ -120,10 +120,8 @@ public class ButtonBar extends JPanel {
      * @param state ボタン状態
      */
     public void setState(final ButtonState state) {
-        
-        if (runListener == null || backListener == null ||
-            cancelListener == null || endListener == null)
-        {
+
+        if (runListener == null || backListener == null || cancelListener == null || endListener == null) {
             String m = "ボタンバーのリスナーが設定されていないため状態を変更出来ません。";
             RuntimeException e = new IllegalStateException(m);
             log.fatal(m, e);

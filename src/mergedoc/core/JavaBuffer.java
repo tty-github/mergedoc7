@@ -20,11 +20,11 @@ import org.apache.commons.logging.LogFactory;
  */
 public class JavaBuffer {
 
-	/** ロガー */
-	private static final Log log = LogFactory.getLog(JavaBuffer.class);
+    /** ロガー */
+    private static final Log log = LogFactory.getLog(JavaBuffer.class);
 
-	/** クラス種類（class|interface|@interface|enum） */
-	private String classKind;
+    /** クラス種類（class|interface|@interface|enum） */
+    private String classKind;
 
     /** クラス名 */
     private final String className;
@@ -33,8 +33,7 @@ public class JavaBuffer {
     private final String source;
 
     /** ブロックコメントのパターン */
-    private static final Pattern commentPattern = PatternCache.getPattern(
-        "(?sm)^ *?/\\*\\*.*?\\*/ *?\\n?");
+    private static final Pattern commentPattern = PatternCache.getPattern("(?sm)^ *?/\\*\\*.*?\\*/ *?\\n?");
 
     /** ブロックコメントのマッチャー */
     private final Matcher commentMatcher;
@@ -46,6 +45,7 @@ public class JavaBuffer {
     private static class ClassBlock {
         final String name;
         final int end;
+
         ClassBlock(String name, int end) {
             this.name = name;
             this.end = end;
@@ -56,8 +56,7 @@ public class JavaBuffer {
     private final Stack<ClassBlock> classStack = new Stack<ClassBlock>();
 
     /** インナークラスコメントが無いことを示す一時的なコメント */
-    private static final String DUMMY_COMMENT =
-        "/** Empty comment. " + JavaBuffer.class.getName() + ". */\n";
+    private static final String DUMMY_COMMENT = "/** Empty comment. " + JavaBuffer.class.getName() + ". */\n";
 
     /**
      * コンストラクタです。
@@ -137,39 +136,39 @@ public class JavaBuffer {
 
         for (int i = declareMaxLength; i <= last; i++) {
 
-            if (c[i-1] == '/' && c[i] == '*') {
-            	// ブロックコメントを読み飛ばし
+            if (c[i - 1] == '/' && c[i] == '*') {
+                // ブロックコメントを読み飛ばし
                 for (i++; i <= last; i++) {
-                    if (c[i-1] == '*' && c[i] == '/') {
+                    if (c[i - 1] == '*' && c[i] == '/') {
                         break;
                     }
                 }
-            } else if (c[i-1] == '/' && c[i] == '/') {
-            	// 行コメントを読み飛ばし
+            } else if (c[i - 1] == '/' && c[i] == '/') {
+                // 行コメントを読み飛ばし
                 for (i++; i <= last; i++) {
                     if (c[i] == '\n') {
                         i++;
                         break;
                     }
                 }
-            } else if (c[i-1] != '\'' && c[i] == '"') {
-            	// ダブルクォートで囲まれた部分を読み飛ばし
+            } else if (c[i - 1] != '\'' && c[i] == '"') {
+                // ダブルクォートで囲まれた部分を読み飛ばし
                 for (i++; i <= last; i++) {
                     if (c[i] == '"') {
-                    	if(c[i-1] != '\\' || (c[i -1] == '\\' && c[i -2] == '\\')){
-                    		break;
-                    	}
+                        if (c[i - 1] != '\\' || (c[i - 1] == '\\' && c[i - 2] == '\\')) {
+                            break;
+                        }
                     }
                 }
-            } else if (c[i-1] != '"' && c[i] == '\'') {
-            	// シングルクォートで囲まれた部分を読み飛ばし
-            	for (i++; i <= last; i++) {
-            		if (c[i] == '\'') {
-            			if(c[i-1] != '\\' || (c[i -1] == '\\' && c[i -2] == '\\')){
-                    		break;
-                    	}
-            		}
-            	}
+            } else if (c[i - 1] != '"' && c[i] == '\'') {
+                // シングルクォートで囲まれた部分を読み飛ばし
+                for (i++; i <= last; i++) {
+                    if (c[i] == '\'') {
+                        if (c[i - 1] != '\\' || (c[i - 1] == '\\' && c[i - 2] == '\\')) {
+                            break;
+                        }
+                    }
+                }
             }
             if (i >= last) {
                 break;
@@ -180,31 +179,25 @@ public class JavaBuffer {
             int declaPos = -1;
             if (c[i] == ' ' || c[i] == '\n' || c[i] == '<') {
 
-                if (c[i-5] == 'c' && c[i-4] == 'l' && c[i-3] == 'a' &&
-                    c[i-2] == 's' && c[i-1] == 's')
-                {
-                	// class 宣言の場合
-                    if (c[i-6] == ' ' || c[i-6] == '\n') {
+                if (c[i - 5] == 'c' && c[i - 4] == 'l' && c[i - 3] == 'a' && c[i - 2] == 's' && c[i - 1] == 's') {
+                    // class 宣言の場合
+                    if (c[i - 6] == ' ' || c[i - 6] == '\n') {
                         declaPos = i - 7;
                     }
-                } else if (c[i-9] == 'i' && c[i-8] == 'n' && c[i-7] == 't' &&
-                           c[i-6] == 'e' && c[i-5] == 'r' && c[i-4] == 'f' &&
-                           c[i-3] == 'a' && c[i-2] == 'c' && c[i-1] == 'e')
-                {
-                	// interface 宣言の場合
-                    if (c[i-10] == ' ' || c[i-10] == '\n') {
+                } else if (c[i - 9] == 'i' && c[i - 8] == 'n' && c[i - 7] == 't' && c[i - 6] == 'e' && c[i - 5] == 'r' && c[i - 4] == 'f'
+                        && c[i - 3] == 'a' && c[i - 2] == 'c' && c[i - 1] == 'e') {
+                    // interface 宣言の場合
+                    if (c[i - 10] == ' ' || c[i - 10] == '\n') {
                         declaPos = i - 11;
-                    } else if (c[i-10] == '@') {
-                    	// @interface 宣言の場合
-                        if (c[i-11] == ' ' || c[i-11] == '\n') {
+                    } else if (c[i - 10] == '@') {
+                        // @interface 宣言の場合
+                        if (c[i - 11] == ' ' || c[i - 11] == '\n') {
                             declaPos = i - 12;
                         }
                     }
-                } else if (c[i-4] == 'e' && c[i-3] == 'n' && c[i-2] == 'u' &&
-                		   c[i-1] == 'm')
-                {
-                	// enum 宣言の場合
-                    if (c[i-5] == ' ' || c[i-5] == '\n') {
+                } else if (c[i - 4] == 'e' && c[i - 3] == 'n' && c[i - 2] == 'u' && c[i - 1] == 'm') {
+                    // enum 宣言の場合
+                    if (c[i - 5] == ' ' || c[i - 5] == '\n') {
                         declaPos = i - 6;
                     }
                 }
@@ -213,13 +206,13 @@ public class JavaBuffer {
             // クラス宣言に Javadoc コメントが無ければ、ダミー挿入位置リストに追加
             for (int j = declaPos; j > 0; j--) {
 
-                if (c[j-1] == '*' && c[j] == '/') {
+                if (c[j - 1] == '*' && c[j] == '/') {
                     break;
                 }
                 if (c[j] == ';' || c[j] == '}' || c[j] == '{') {
 
                     for (int k = j - 1; k > 0; k--) {
-                        if (c[k-1] == '/' && c[k] == '/') {
+                        if (c[k - 1] == '/' && c[k] == '/') {
                             break;
                         }
                         if (c[k] == '\n') {
@@ -305,26 +298,24 @@ public class JavaBuffer {
     public Signature getSignature() {
         int commentEndPos = commentMatcher.end();
         String commentEndToEOF = source.substring(commentEndPos, source.length());
-		Matcher matcher = PatternCache.getPattern("(?s)/\\*(.*?)\\*/").matcher(commentEndToEOF);
-		StringBuffer sb = new StringBuffer(commentEndToEOF.length());
-		while (matcher.find()) {
-			String comment = matcher.group();
-			if(comment.contains(DUMMY_COMMENT)){
-				matcher.appendReplacement(sb, comment);
-				continue;
-			}
-			matcher.appendReplacement(sb, "");
-			sb.append("/*");
-			sb.append(PatternCache.getPattern("[^\\*\n]").matcher(matcher.group(1))
-					.replaceAll(" "));
-			sb.append("*/");
-		}
+        Matcher matcher = PatternCache.getPattern("(?s)/\\*(.*?)\\*/").matcher(commentEndToEOF);
+        StringBuffer sb = new StringBuffer(commentEndToEOF.length());
+        while (matcher.find()) {
+            String comment = matcher.group();
+            if (comment.contains(DUMMY_COMMENT)) {
+                matcher.appendReplacement(sb, comment);
+                continue;
+            }
+            matcher.appendReplacement(sb, "");
+            sb.append("/*");
+            sb.append(PatternCache.getPattern("[^\\*\n]").matcher(matcher.group(1)).replaceAll(" "));
+            sb.append("*/");
+        }
         matcher.appendTail(sb);
         commentEndToEOF = sb.toString();
 
         // シグネチャを取得しやすくするためにアノテーション宣言を除去
-        commentEndToEOF = FastStringUtils.replaceFirst(
-        		commentEndToEOF, "(?s)^(\\s*@[\\w]+\\s*\\(.*?\\))*\\s*", "");
+        commentEndToEOF = FastStringUtils.replaceFirst(commentEndToEOF, "(?s)^(\\s*@[\\w]+\\s*\\(.*?\\))*\\s*", "");
 
         Pattern sigPattern = PatternCache.getPattern("(?s)(.+?)(throws|\\{|\\=|;|,\\s*/\\*|\\})");
         Matcher sigMatcher = sigPattern.matcher(commentEndToEOF);
@@ -343,7 +334,7 @@ public class JavaBuffer {
             String sigStr = sigMatcher.group(1);
             sigStr = FastStringUtils.replaceFirst(sigStr, "(?s)/\\*[^\\*].*?\\*/\\s*", "");
             if (classKind.equals("@interface")) {
-            	sigStr = sigStr.replace("()", "");
+                sigStr = sigStr.replace("()", "");
             }
             Signature sig = new Signature(classBlock.name, sigStr);
 
@@ -358,8 +349,7 @@ public class JavaBuffer {
             return sig;
         }
 
-        log.warn("Javadoc コメントの後のシグネチャを取得できませんでした。\n" +
-        	commentEndToEOF);
+        log.warn("Javadoc コメントの後のシグネチャを取得できませんでした。\n" + commentEndToEOF);
         return null;
     }
 
@@ -380,59 +370,57 @@ public class JavaBuffer {
     private int searchEndOfInner(String currentToEnd, String iClassName) {
         // コメント中に { があり、}との整合性がとれない場合があるため、
         // コメントを読み飛ばして判定する 例：java.util.Spliterators
-    	int nestLevel = 0;
+        int nestLevel = 0;
         char[] c = currentToEnd.toCharArray();
         int last = c.length - 1;
         boolean startInnerClass = false;
-        for (int i = 1; i<= last; i++){
-        	if(c[i -1] == '{') {
-            	nestLevel++;
-            	startInnerClass = true;
-            }else if(c[i -1] == '}') {
-            	nestLevel--;
+        for (int i = 1; i <= last; i++) {
+            if (c[i - 1] == '{') {
+                nestLevel++;
+                startInnerClass = true;
+            } else if (c[i - 1] == '}') {
+                nestLevel--;
             }
             if (startInnerClass == true && nestLevel == 0) {
-            	return commentMatcher.end() + i - 1;
+                return commentMatcher.end() + i - 1;
             }
-        	if (c[i-1] == '/' && c[i] == '*') {
-            	// ブロックコメントを読み飛ばし
+            if (c[i - 1] == '/' && c[i] == '*') {
+                // ブロックコメントを読み飛ばし
                 for (i++; i <= last; i++) {
-                    if (c[i-1] == '*' && c[i] == '/') {
+                    if (c[i - 1] == '*' && c[i] == '/') {
                         break;
                     }
                 }
-            } else if (c[i-1] == '/' && c[i] == '/') {
-            	// 行コメントを読み飛ばし
+            } else if (c[i - 1] == '/' && c[i] == '/') {
+                // 行コメントを読み飛ばし
                 for (i++; i <= last; i++) {
                     if (c[i] == '\n') {
                         i++;
                         break;
                     }
                 }
-            } else if (c[i-1] != '\'' && c[i] == '"') {
-            	// ダブルクォートで囲まれた部分を読み飛ばし
+            } else if (c[i - 1] != '\'' && c[i] == '"') {
+                // ダブルクォートで囲まれた部分を読み飛ばし
                 for (i++; i <= last; i++) {
                     if (c[i] == '"') {
-                    	if(c[i-1] != '\\' || (c[i -1] == '\\' && c[i -2] == '\\')){
-                    		break;
-                    	}
+                        if (c[i - 1] != '\\' || (c[i - 1] == '\\' && c[i - 2] == '\\')) {
+                            break;
+                        }
                     }
                 }
-            } else if (c[i-1] != '"' && c[i] == '\'') {
-            	// シングルクォートで囲まれた部分を読み飛ばし
-            	for (i++; i <= last; i++) {
-            		if (c[i] == '\'') {
-            			if(c[i-1] != '\\' || (c[i -1] == '\\' && c[i -2] == '\\')){
-                    		break;
-                    	}
-            		}
-            	}
+            } else if (c[i - 1] != '"' && c[i] == '\'') {
+                // シングルクォートで囲まれた部分を読み飛ばし
+                for (i++; i <= last; i++) {
+                    if (c[i] == '\'') {
+                        if (c[i - 1] != '\\' || (c[i - 1] == '\\' && c[i - 2] == '\\')) {
+                            break;
+                        }
+                    }
+                }
             }
         }
 
-        log.warn(
-            "インナークラス " + className + "#" + iClassName +
-            " の終了位置が検出できませんでした。");
+        log.warn("インナークラス " + className + "#" + iClassName + " の終了位置が検出できませんでした。");
         return -1;
     }
 
@@ -452,9 +440,9 @@ public class JavaBuffer {
         String docComment = comment.buildComment();
 
         // debug setLocalizedComment シグネチャ、コメントの確認
-    	//log.debug("シグネチャ: " + sig);
-    	//log.debug("英語 Java ソースコメント:\n" + srcComment);
-    	//log.debug("日本語 API ドキュメントコメント:\n" + docComment + "\n--------------");
+        //log.debug("シグネチャ: " + sig);
+        //log.debug("英語 Java ソースコメント:\n" + srcComment);
+        //log.debug("日本語 API ドキュメントコメント:\n" + docComment + "\n--------------");
 
         if (docComment == null || docComment.length() == 0) {
             return;

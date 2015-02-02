@@ -14,7 +14,6 @@ import java.util.regex.PatternSyntaxException;
 import mergedoc.core.FastStringUtils;
 import mergedoc.core.PatternCache;
 
-
 /**
  * 置換エントリです。置換エントリは子を階層的に持つことが出来ます。
  * @author Shinji Kashihara
@@ -26,7 +25,7 @@ public class ReplaceEntry {
 
     /** 置換前文字列 */
     private String before = "";
-    
+
     /** 置換後文字列 */
     private String after = "";
 
@@ -41,7 +40,7 @@ public class ReplaceEntry {
      */
     public ReplaceEntry() {
     }
-    
+
     /**
      * 説明をセットします。
      * @param description 説明
@@ -49,7 +48,7 @@ public class ReplaceEntry {
     public void setDescription(String description) {
         this.description = description;
     }
-    
+
     /**
      * 説明を取得します。
      * @return 説明
@@ -81,7 +80,7 @@ public class ReplaceEntry {
     public void setAfter(String after) {
         this.after = after;
     }
-    
+
     /**
      * 置換後文字列を取得します。
      * @return 置換後文字列
@@ -97,7 +96,7 @@ public class ReplaceEntry {
     public void setTarget(String target) {
         this.target = target;
     }
-    
+
     /**
      * 対象を取得します。
      * @return 対象
@@ -105,7 +104,7 @@ public class ReplaceEntry {
     public String getTarget() {
         return target;
     }
-    
+
     /**
      * 子となる置換エントリを追加します。
      * @param entry 子となる置換エントリ
@@ -116,7 +115,7 @@ public class ReplaceEntry {
         }
         entries.add(entry);
     }
-        
+
     /**
      * 指定した文字列をこの置換エントリの設定で処理します。
      * 子を持つ場合は再起的に処理されます。
@@ -130,9 +129,9 @@ public class ReplaceEntry {
         if (before.length() > 0) {
             try {
                 source = replaceSelf(source);
-            } catch(PatternSyntaxException e) {
-                throw new IllegalStateException(
-                    "置換エントリの処理でエラーが発生しました。\n" +                     "原因: " + e.getMessage() + "\n" +                    "前: " + before + "\n" + "後: " + after);
+            } catch (PatternSyntaxException e) {
+                throw new IllegalStateException("置換エントリの処理でエラーが発生しました。\n" + "原因: " + e.getMessage() + "\n" + "前: " + before + "\n" + "後: "
+                        + after);
             }
         }
         // 子置換エントリの処理
@@ -168,13 +167,13 @@ public class ReplaceEntry {
             source = sb.toString();
 
         } else {
-                
+
             // 対象が指定されていない場合
             source = FastStringUtils.replaceAll(source, before, after);
         }
         return source;
     }
-    
+
     /**
      * このインスタンスの文字列表現を取得します。
      * @return 文字列表現

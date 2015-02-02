@@ -12,13 +12,13 @@ package mergedoc;
 public class MergeDocException extends Exception {
 
     /**
-     * コンストラクタです。 
+     * コンストラクタです。
      */
     public MergeDocException() {
     }
 
     /**
-     * コンストラクタです。 
+     * コンストラクタです。
      * @param message メッセージ
      */
     public MergeDocException(String message) {
@@ -26,7 +26,7 @@ public class MergeDocException extends Exception {
     }
 
     /**
-     * コンストラクタです。 
+     * コンストラクタです。
      * @param cause 原因
      */
     public MergeDocException(Throwable cause) {
@@ -34,7 +34,7 @@ public class MergeDocException extends Exception {
     }
 
     /**
-     * コンストラクタです。 
+     * コンストラクタです。
      * @param message メッセージ
      * @param cause 原因
      */

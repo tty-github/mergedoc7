@@ -40,8 +40,8 @@ import org.xml.sax.SAXException;
  */
 public class MergeManager {
 
-	/** ロガー */
-	private static final Log log = LogFactory.getLog(MergeManager.class);
+    /** ロガー */
+    private static final Log log = LogFactory.getLog(MergeManager.class);
 
     /** マージ設定 */
     private Preference pref;
@@ -111,46 +111,38 @@ public class MergeManager {
         if (docDir != null && docDir.getPath().length() > 0) {
             File rootFile = new File(docDir, "allclasses-frame.html");
             if (!rootFile.exists()) {
-                throw new MergeDocException(
-                "正しい API ドキュメントディレクトリを指定してください。\n" +                "指定するディレクトリには allclasses-frame.html ファイルが\n" +                "含まれている必要があります。");
+                throw new MergeDocException("正しい API ドキュメントディレクトリを指定してください。\n" + "指定するディレクトリには allclasses-frame.html ファイルが\n"
+                        + "含まれている必要があります。");
             }
         }
 
         // 入力ソースアーカイブファイルのチェック
         File inFile = pref.getInputArchive();
         if (inFile == null || inFile.getPath().equals("")) {
-            throw new MergeDocException(
-            "入力ソースアーカイブファイルを指定してください。");
+            throw new MergeDocException("入力ソースアーカイブファイルを指定してください。");
         }
         if (entrySize() == 0) {
-            throw new MergeDocException(
-            "正しい入力ソースアーカイブファイルを指定してください。");
+            throw new MergeDocException("正しい入力ソースアーカイブファイルを指定してください。");
         }
 
         // 出力ソースアーカイブファイルのチェック
         File outFile = pref.getOutputArchive();
         if (outFile == null || outFile.getPath().equals("")) {
-            throw new MergeDocException(
-            "出力ソースアーカイブファイルを指定してください。");
+            throw new MergeDocException("出力ソースアーカイブファイルを指定してください。");
         }
         if (outFile.equals(inFile)) {
-            throw new MergeDocException(
-            "入力、出力ソースアーカイブファイルに同じファイルが指定されています。\n" +
-            "正しい出力ソースアーカイブファイルを指定してください。");
+            throw new MergeDocException("入力、出力ソースアーカイブファイルに同じファイルが指定されています。\n" + "正しい出力ソースアーカイブファイルを指定してください。");
         }
         if (pref.getOutputArchive().exists()) {
             if (!outFile.canWrite()) {
-                throw new MergeDocException(
-                "指定された出力ソースアーカイブファイルは書き込み不可です。\n" +
-                "正しい出力ソースアーカイブファイルを指定してください。");
+                throw new MergeDocException("指定された出力ソースアーカイブファイルは書き込み不可です。\n" + "正しい出力ソースアーカイブファイルを指定してください。");
             }
         } else {
             try {
                 outFile.createNewFile();
                 outFile.delete();
             } catch (IOException e) {
-                throw new MergeDocException(
-                "正しい出力ソースアーカイブファイルを指定してください。", e);
+                throw new MergeDocException("正しい出力ソースアーカイブファイルを指定してください。", e);
             }
         }
     }
@@ -172,8 +164,7 @@ public class MergeManager {
         try {
             in = ArchiveInputStream.create(pref.getInputArchive());
 
-            out = new ZipOutputStream(new BufferedOutputStream(
-                new FileOutputStream(pref.getOutputArchive())));
+            out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(pref.getOutputArchive())));
             out.setLevel(Deflater.BEST_SPEED);
 
             long start = System.currentTimeMillis();
@@ -203,9 +194,7 @@ public class MergeManager {
      * @throws SAXException SAX パース例外が発生した場合
      * @throws IOException 入出力例外が発生した場合
      */
-    private void merge(ArchiveInputStream in, ZipOutputStream out)
-        throws MergeDocException, SAXException, IOException
-    {
+    private void merge(ArchiveInputStream in, ZipOutputStream out) throws MergeDocException, SAXException, IOException {
         Merger merger = new Merger(pref.getDocDirectory());
         merger.setDocEncoding(pref.getDocEncoding());
 
@@ -275,9 +264,7 @@ public class MergeManager {
      * @throws SAXException SAX パース例外が発生した場合
      * @throws IOException 入出力例外が発生した場合
      */
-    private String doFilter(String className, String source)
-        throws MergeDocException, SAXException, IOException
-    {
+    private String doFilter(String className, String source) throws MergeDocException, SAXException, IOException {
         // クラス別置換定義の処理
         String path = FastStringUtils.replaceAll(className, "\\.", "/") + ".xml";
         ConfigManager config = ConfigManager.getInstance();

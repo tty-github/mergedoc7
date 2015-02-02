@@ -45,7 +45,6 @@ public class FileChooserField extends JPanel {
     /** ロガー */
     private static final Log log = LogFactory.getLog(FileChooserField.class);
 
-
     /** ラベル部 */
     private final JLabel label = new JLabel();
 
@@ -57,20 +56,18 @@ public class FileChooserField extends JPanel {
 
     /** コンボボックス部 */
     private final JComboBox combo = new JComboBox();
-    
+
     /** ファイル選択ダイアログ */
     private JFileChooser chooser = new JFileChooser();
 
     /** ファイル選択時のリスナー */
     private ActionListener chooseListener;
 
-
     /** エンコーディングデフォルト */
     public static final String ENCODING_DEFAULT = System.getProperty("file.encoding");
 
     /** エンコーディング自動判別 */
     public static final String ENCODING_AUTO = "JISAutoDetect";
-
 
     /** 選択モードインターフェース */
     private static interface SelectionMode {
@@ -88,6 +85,7 @@ public class FileChooserField extends JPanel {
                 public boolean accept(File f) {
                     return f.isDirectory();
                 }
+
                 @Override
                 public String getDescription() {
                     return "ディレクトリのみ";
@@ -104,10 +102,9 @@ public class FileChooserField extends JPanel {
             chooser.setFileFilter(new FileFilter() {
                 @Override
                 public boolean accept(File f) {
-                    return f.isDirectory() ||
-                           f.getName().endsWith(".zip") ||
-                           f.getName().endsWith(".jar");
+                    return f.isDirectory() || f.getName().endsWith(".zip") || f.getName().endsWith(".jar");
                 }
+
                 @Override
                 public String getDescription() {
                     return "*.zip, *.jar";
@@ -124,12 +121,10 @@ public class FileChooserField extends JPanel {
             chooser.setFileFilter(new FileFilter() {
                 @Override
                 public boolean accept(File f) {
-                    return f.isDirectory() ||
-                           f.getName().endsWith(".zip") ||
-                           f.getName().endsWith(".jar") ||
-                           f.getName().endsWith(".tgz") ||
-                           f.getName().endsWith(".tar.gz");
+                    return f.isDirectory() || f.getName().endsWith(".zip") || f.getName().endsWith(".jar") || f.getName().endsWith(".tgz")
+                            || f.getName().endsWith(".tar.gz");
                 }
+
                 @Override
                 public String getDescription() {
                     return "*.zip, *.jar, *.tgz, *.tar.gz";
@@ -137,7 +132,6 @@ public class FileChooserField extends JPanel {
             });
         }
     };
-
 
     /**
      * コンストラクタです。
@@ -200,11 +194,11 @@ public class FileChooserField extends JPanel {
         chooser = new JFileChooser();
         mode.apply(chooser);
     }
-    
+
     /**
      * ファイル選択時のリスナーをセットします．
      * @param chooseListener ファイル選択時のリスナー
-     */    
+     */
     public void setChooseListener(ActionListener chooseListener) {
         this.chooseListener = chooseListener;
     }
@@ -233,7 +227,7 @@ public class FileChooserField extends JPanel {
     public File getFile() {
         return new File(textField.getText());
     }
-    
+
     /**
      * コンボボックスを取得します。
      * @return コンボボックス
@@ -265,7 +259,7 @@ public class FileChooserField extends JPanel {
             super(set.toArray());
             charsetNames = set;
         }
-        
+
         private boolean isSupported(Object charset) {
             try {
                 new String(new byte[0], charset.toString());
@@ -274,17 +268,17 @@ public class FileChooserField extends JPanel {
             }
             return true;
         }
-        
+
         private void add(Object charset) {
             if (isSupported(charset)) {
                 charsetNames.add(charset);
             }
         }
-        
+
         private void fireAdded() {
             combo.setModel(new CharsetSortedModel(charsetNames));
         }
-        
+
         @Override
         public void addElement(Object charset) {
             if (isSupported(charset) && !charsetNames.contains(charset)) {
@@ -343,9 +337,7 @@ public class FileChooserField extends JPanel {
                     setFile(file);
                     textField.repaint();
                     imported = true;
-                } catch (UnsupportedFlavorException e) {
-                } catch (IOException e) {
-                }
+                } catch (UnsupportedFlavorException e) {} catch (IOException e) {}
             } else {
                 imported = originHandler.importData(comp, t);
             }

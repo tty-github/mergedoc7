@@ -29,13 +29,9 @@ public class TitledPanel extends JPanel {
     public TitledPanel(String title) {
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setBorder(new TitledBorder(
-            BorderFactory.createEtchedBorder(EtchedBorder.LOWERED),
-            title,
-            TitledBorder.LEFT,
-            TitledBorder.TOP));
+        setBorder(new TitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), title, TitledBorder.LEFT, TitledBorder.TOP));
     }
-    
+
     /**
      * コンポーネントをこのコンテナの最後に追加します。
      * @param comp 追加されるコンポーネント
@@ -44,7 +40,7 @@ public class TitledPanel extends JPanel {
      */
     @Override
     public Component add(Component comp) {
-        
+
         if (innerPanel == null) {
             innerPanel = new JPanel();
             innerPanel.setBorder(BorderFactory.createEmptyBorder(0, 6, 6, 6));

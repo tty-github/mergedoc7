@@ -27,11 +27,11 @@ import org.jsoup.select.Elements;
  */
 public class APIDocument {
 
-	/** ロガー */
-	private static final Log log = LogFactory.getLog(APIDocument.class);
+    /** ロガー */
+    private static final Log log = LogFactory.getLog(APIDocument.class);
 
     /** シグネチャをキーとしたコメントのテーブル */
-    private final Map<Signature,Comment> contextTable = new HashMap<Signature,Comment>();
+    private final Map<Signature, Comment> contextTable = new HashMap<Signature, Comment>();
 
     /**
      * see タグや link タグの埋め込みリンクパターン。
@@ -40,8 +40,8 @@ public class APIDocument {
      *   group(2): ラベル
      * </pre>
      */
-    private static final Pattern linkClassPattern = PatternCache.getPattern(
-            "(?si)<A\\s+HREF=\"(?!ftp)(?!.*package-summary)(?!.*serialized-form)([^\"]+)\"[^>]*><CODE>(.+?)</CODE></A>");
+    private static final Pattern linkClassPattern = PatternCache
+            .getPattern("(?si)<A\\s+HREF=\"(?!ftp)(?!.*package-summary)(?!.*serialized-form)([^\"]+)\"[^>]*><CODE>(.+?)</CODE></A>");
 
     /**
      * コンストラクタです。
@@ -54,10 +54,10 @@ public class APIDocument {
 
         // API ドキュメント絶対パスを生成
         StringBuilder path = new StringBuilder();
-        path.append( docDir.getPath() );
-        path.append( File.separator );
-        path.append( className.replace('.', File.separatorChar) );
-        path.append( ".html" );
+        path.append(docDir.getPath());
+        path.append(File.separator);
+        path.append(className.replace('.', File.separatorChar));
+        path.append(".html");
 
         // API ドキュメントファイルのロード
         File docFile = new CachedFile(path.toString());
@@ -88,6 +88,7 @@ public class APIDocument {
         public CachedFile(String path) {
             super(path);
         }
+
         @Override
         public File[] listFiles() {
             File dir = getParentFile();
@@ -299,9 +300,9 @@ public class APIDocument {
      */
     private Signature createSignature(String className, String sig) {
         sig = FastStringUtils.replaceAll(sig, "(?s)<.+?>", " "); // タグ除去
-        sig = FastStringUtils.replaceAll(sig, "\\&nbsp;", " ");  // 空白置換
-        sig = FastStringUtils.replaceAll(sig, "\\&lt;", "<");    // 型引数開始タグ
-        sig = FastStringUtils.replaceAll(sig, "\\&gt;", ">");    // 型引数終了タグ
+        sig = FastStringUtils.replaceAll(sig, "\\&nbsp;", " "); // 空白置換
+        sig = FastStringUtils.replaceAll(sig, "\\&lt;", "<"); // 型引数開始タグ
+        sig = FastStringUtils.replaceAll(sig, "\\&gt;", ">"); // 型引数終了タグ
         sig = FastStringUtils.replaceFirst(sig, "(?s)\\sthrows\\s.*", "");
         Signature signature = new Signature(className, sig);
         return signature;

@@ -38,14 +38,9 @@ abstract public class AbstractHandler extends DefaultHandler {
      * @see org.xml.sax.ContentHandler#startElement
      */
     @Override
-    public void startElement(
-        String uri,
-        String localName,
-        String qName,
-        Attributes attributes) throws SAXException
-    {
+    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         if ("置換エントリ".equals(qName)) {
-            
+
             String target = attributes.getValue("対象");
             if (level == 0) {
 
@@ -54,7 +49,7 @@ abstract public class AbstractHandler extends DefaultHandler {
                 currentEntry = rootEntry;
 
             } else {
-                
+
                 currentEntry = new ReplaceEntry();
                 if (target == null) {
                     currentEntry.setTarget(rootEntry.getTarget());
@@ -65,7 +60,7 @@ abstract public class AbstractHandler extends DefaultHandler {
             }
             level++;
         }
-        
+
         currentQName = qName;
     }
 
@@ -80,9 +75,7 @@ abstract public class AbstractHandler extends DefaultHandler {
      * @see org.xml.sax.ContentHandler#endElement
      */
     @Override
-    public void endElement(String uri, String localName, String qName)
-        throws SAXException
-    {
+    public void endElement(String uri, String localName, String qName) throws SAXException {
         if ("置換エントリ".equals(qName)) {
             level--;
             if (level == 0) {
@@ -104,15 +97,15 @@ abstract public class AbstractHandler extends DefaultHandler {
     public void characters(char[] c, int start, int length) throws SAXException {
 
         if (currentEntry == null) {
-            
+
         } else if ("説明".equals(currentQName)) {
             String desc = String.valueOf(c, start, length);
             currentEntry.setDescription(desc);
-            
+
         } else if ("前".equals(currentQName)) {
             String before = String.valueOf(c, start, length);
             currentEntry.setBefore(before);
-            
+
         } else if ("後".equals(currentQName)) {
             String after = expandEscape(c, start, length);
             currentEntry.setAfter(after);
@@ -127,22 +120,29 @@ abstract public class AbstractHandler extends DefaultHandler {
      * @return  展開した文字配列
      */
     private String expandEscape(char[] c, int start, int length) {
-            
+
         StringBuilder sb = new StringBuilder();
         int end = start + length - 1;
-            
+
         for (int i = start; i <= end; i++) {
-            if (c[i] == '\\' &&
-                (i == start || c[i-1] != '\\') &&
-                i != end)
-            {
+            if (c[i] == '\\' && (i == start || c[i - 1] != '\\') && i != end) {
                 char ex = ' ';
-                switch (c[i+1]) {
-                    case 'b': ex='\b'; break;
-                    case 'f': ex='\f'; break;
-                    case 'n': ex='\n'; break;
-                    case 'r': ex='\r'; break;
-                    case 't': ex='\t'; break;
+                switch (c[i + 1]) {
+                case 'b':
+                    ex = '\b';
+                    break;
+                case 'f':
+                    ex = '\f';
+                    break;
+                case 'n':
+                    ex = '\n';
+                    break;
+                case 'r':
+                    ex = '\r';
+                    break;
+                case 't':
+                    ex = '\t';
+                    break;
                 }
                 if (ex != ' ') {
                     sb.append(ex);
@@ -152,10 +152,10 @@ abstract public class AbstractHandler extends DefaultHandler {
             }
             sb.append(c[i]);
         }
-            
-        return sb.toString();        
+
+        return sb.toString();
     }
-    
+
     /**
      * 置換エントリを処理します。
      * @param entry 置換エントリ

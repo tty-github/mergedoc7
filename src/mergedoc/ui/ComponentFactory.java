@@ -24,13 +24,20 @@ public class ComponentFactory {
     /** このアプリケーションがサポートするコンポーネント最大サイズ（不変） */
     private static final Dimension maxDimension = new Dimension(3200, 2400) {
         @Override
-        public void setSize(Dimension d) {}
+        public void setSize(Dimension d) {
+        }
+
         @Override
-        public void setSize(double width, double height) {}
+        public void setSize(double width, double height) {
+        }
+
         @Override
-        public void setSize(int width, int height) {}
+        public void setSize(int width, int height) {
+        }
+
         @Override
-        public void setSize(Dimension2D d) {}
+        public void setSize(Dimension2D d) {
+        }
     };
 
     /**
@@ -48,7 +55,7 @@ public class ComponentFactory {
     public static Dimension createMaxDimension() {
         return maxDimension;
     }
-    
+
     /**
      * サイズ固定のスペーサを作成します。
      * @param width 横サイズ
@@ -73,7 +80,7 @@ public class ComponentFactory {
         compo.setMinimumSize(dim);
         compo.setMaximumSize(dim);
     }
-    
+
     /**
      * 縦スクロール可能なスクロールペインを作成します。
      * @param compo ビューポートに表示するコンポーネント
@@ -84,18 +91,16 @@ public class ComponentFactory {
         setupVerticalScrollPane(scrollPane);
         return scrollPane;
     }
-    
+
     /**
      * スクロールペインに縦スクロール設定します。
      * @param scrollPane スクロールペイン
      */
     public static void setupVerticalScrollPane(JScrollPane scrollPane) {
-        scrollPane.setHorizontalScrollBarPolicy(
-            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.setVerticalScrollBarPolicy(
-            JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
     }
-    
+
     /**
      * 指定したコンポーネント配列に設定されているフォントメトリクスから
      * 最も長いテキストの幅に各コンポーネントの幅を合わせます。
@@ -104,7 +109,7 @@ public class ComponentFactory {
     public static void ensureMaxFontWidth(JComponent[] compos) {
 
         int maxWidth = 0;
-        
+
         for (JComponent compo : compos) {
             FontMetrics metrics = compo.getFontMetrics(compo.getFont());
             int width = 0;
@@ -116,20 +121,19 @@ public class ComponentFactory {
                 for (int j = 0; j < model.getSize(); j++) {
                     width = metrics.stringWidth(model.getElementAt(j).toString());
                     width += 30; //プルダウン部分を加算
-                    if (width > maxWidth ) {
+                    if (width > maxWidth) {
                         maxWidth = width;
                     }
                 }
             } else {
-                throw new IllegalArgumentException(
-                "引数は JLabel[] または JComboBox[] でなければなりません。");
+                throw new IllegalArgumentException("引数は JLabel[] または JComboBox[] でなければなりません。");
             }
 
-            if (width > maxWidth ) {
+            if (width > maxWidth) {
                 maxWidth = width;
             }
         }
-        
+
         for (JComponent compo : compos) {
             ComponentFactory.ensureSize(compo, maxWidth, 20);
         }

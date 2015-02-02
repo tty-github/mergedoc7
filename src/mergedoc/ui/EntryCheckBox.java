@@ -26,7 +26,7 @@ public class EntryCheckBox extends JCheckBox {
         this.entry = entry;
         setText(entry.getDescription());
     }
-    
+
     /**
      * 置換エントリを取得します。
      * @return 置換エントリ

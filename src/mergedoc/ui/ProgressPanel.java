@@ -96,12 +96,12 @@ public class ProgressPanel extends JPanel {
             }
         });
     }
-    
+
     /**
      * 進捗バーに表示する文字列をセットします。<br>
      * このメソッドはスレッドに対して安全です。
      * @param text 進捗バーに表示する文字列
-     */    
+     */
     public void setBarText(final String text) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -111,12 +111,12 @@ public class ProgressPanel extends JPanel {
             }
         });
     }
-    
+
     /**
      * 進捗バーの文字列を取得します。
      * @return 進捗バーの文字列
-     */    
+     */
     public String getBarText() {
-    	return progressBar.getString();
+        return progressBar.getString();
     }
 }

@@ -55,7 +55,7 @@ public class PreviewScrollPane extends JScrollPane {
         viewport.setScrollMode(JViewport.BACKINGSTORE_SCROLL_MODE);
         viewport.setView(textPane);
         textPane.setEditable(false);
-        
+
         // プレビュー文字列を ConfigManager から取得
         originPreviewText = ConfigManager.getInstance().getPrevewTemplate();
     }
@@ -87,7 +87,7 @@ public class PreviewScrollPane extends JScrollPane {
         Arrays.fill(fakeTab, tabChar);
         text = FastStringUtils.replaceAll(text, "\t", String.valueOf(fakeTab));
         textPane.setText(text);
-        
+
         // イベント終了後にスクロールバーを元の位置に戻す
         final JScrollBar bar = getVerticalScrollBar();
         final int pos = bar.getValue();
@@ -99,17 +99,17 @@ public class PreviewScrollPane extends JScrollPane {
         });
 
         // 文字の色づけ（Eclipse風味）
-        updateColor("(?s)(/\\*[^\\*].+?\\*/)", new Color(63,127,95));
-        updateColor("(?s)(/\\*\\*.+?\\*/)", new Color(63,95,191));
-        updateColor("(class|public|private|void|extends|super)", new Color(127,0,85));
-        updateColor("(?m).*?[ " + tabChar + "](//.*)", new Color(63,127,95));
-        updateColor(" (\".*?\")", new Color(42,0,255));
-        updateColor(" (@\\w*) ", new Color(127,159,191));
+        updateColor("(?s)(/\\*[^\\*].+?\\*/)", new Color(63, 127, 95));
+        updateColor("(?s)(/\\*\\*.+?\\*/)", new Color(63, 95, 191));
+        updateColor("(class|public|private|void|extends|super)", new Color(127, 0, 85));
+        updateColor("(?m).*?[ " + tabChar + "](//.*)", new Color(63, 127, 95));
+        updateColor(" (\".*?\")", new Color(42, 0, 255));
+        updateColor(" (@\\w*) ", new Color(127, 159, 191));
 
         // タブのダミー文字を背景と同じ色にして不可視にする
         StyledDocument doc = textPane.getStyledDocument();
         MutableAttributeSet atr = new SimpleAttributeSet();
-        Color tabColor = new Color(255,255,200);
+        Color tabColor = new Color(255, 255, 200);
         StyleConstants.setForeground(atr, tabColor);
         StyleConstants.setBackground(atr, tabColor);
         Pattern pat = PatternCache.getPattern(tabChar + "{" + tabSize + "}");

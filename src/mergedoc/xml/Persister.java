@@ -31,9 +31,15 @@ public class Persister {
      */
     public static class Key {
         private final String str;
-        private Key(String str)  {this.str = str;}
+
+        private Key(String str) {
+            this.str = str;
+        }
+
         @Override
-        public String toString() {return str;}
+        public String toString() {
+            return str;
+        }
     }
 
     /** API ドキュメントディレクトリのキー */
@@ -75,16 +81,14 @@ public class Persister {
     /** 詳細設定のチェックリストパネル高のキー */
     public static final Key DETAIL_PANEL_HEIGHT = new Key("window.replace.panel.height");
 
-
     /** 永続化ファイル */
     private final File parsistFile;
 
     /** 永続化ファイルに対応するプロパティ */
-    private final Properties prop = new Properties(); 
+    private final Properties prop = new Properties();
 
     /** このクラスのインスタンス */
     private static Persister parsister;
-
 
     /**
      * コンストラクタです。
@@ -113,7 +117,7 @@ public class Persister {
         }
         return parsister;
     }
-    
+
     /**
      * 永続化します。
      * @throws MergeDocException 永続化に失敗した場合
@@ -127,7 +131,7 @@ public class Persister {
             throw new MergeDocException(parsistFile + " の書き込みでエラーが発生しました。");
         }
     }
-    
+
     /**
      * エントリ数を取得します。
      * @return エントリ数
@@ -135,7 +139,7 @@ public class Persister {
     public int size() {
         return prop.size();
     }
-    
+
     /**
      * String 値をセットします。
      * @param key キー
@@ -145,7 +149,7 @@ public class Persister {
     public void setString(Key key, String value) {
         prop.setProperty(key.toString(), (value == null) ? "" : value);
     }
-    
+
     /**
      * String 値を取得します。
      * @param key キー
@@ -155,7 +159,7 @@ public class Persister {
     public String getString(Key key) {
         return getString(key, null);
     }
-    
+
     /**
      * String 値を取得します。
      * @param key キー
@@ -167,7 +171,7 @@ public class Persister {
         String str = prop.getProperty(key.toString());
         return (str == null) ? def : str;
     }
-    
+
     /**
      * int 値をセットします。
      * @param key キー
@@ -177,7 +181,7 @@ public class Persister {
     public void setInt(Key key, int value) {
         setString(key, String.valueOf(value));
     }
-    
+
     /**
      * int 値を取得します。
      * @param key キー
@@ -188,7 +192,7 @@ public class Persister {
     public int getInt(Key key) {
         return Integer.parseInt(getString(key));
     }
-    
+
     /**
      * int 値を取得します。
      * @param key キー
@@ -203,7 +207,7 @@ public class Persister {
             return def;
         }
     }
-    
+
     /**
      * String[] 値をセットします。
      * @param key キー
@@ -211,7 +215,7 @@ public class Persister {
      * @throws NullPointerException キーまたは値が null の場合
      */
     public void setStrings(Key key, String[] values) {
-        for (int i = 0; ; i++) {
+        for (int i = 0;; i++) {
             String str = prop.getProperty(key.toString() + i);
             if (str == null) {
                 break;
@@ -222,7 +226,7 @@ public class Persister {
             prop.setProperty(key.toString() + i, values[i]);
         }
     }
-    
+
     /**
      * String[] 値を取得します。
      * @param key キー
@@ -231,7 +235,7 @@ public class Persister {
      */
     public String[] getStrings(Key key) {
         List<String> list = new LinkedList<String>();
-        for (int i = 0; ; i++) {
+        for (int i = 0;; i++) {
             String str = prop.getProperty(key.toString() + i);
             if (str == null) {
                 break;

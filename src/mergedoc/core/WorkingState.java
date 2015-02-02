@@ -29,7 +29,7 @@ public class WorkingState {
     private long workTime;
 
     /**
-     * コンストラクタです。 
+     * コンストラクタです。
      */
     public WorkingState() {
     }
@@ -81,7 +81,7 @@ public class WorkingState {
     public boolean isCanceled() {
         return canceled;
     }
-    
+
     /**
      * 処理対象文字列変更回数を取得します．
      * @return 処理対象文字列変更回数
@@ -89,7 +89,7 @@ public class WorkingState {
     public int getChangedCount() {
         return changedCount;
     }
-    
+
     /**
      * 処理に要した時間をセットします．
      * @param workTime 処理に要した時間（秒）
@@ -97,7 +97,7 @@ public class WorkingState {
     public void setWorkTime(long workTime) {
         this.workTime = workTime;
     }
-    
+
     /**
      * 処理に要した時間を取得します．
      * @return 処理に要した時間（秒）

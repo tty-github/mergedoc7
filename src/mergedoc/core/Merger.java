@@ -19,11 +19,11 @@ import org.apache.commons.logging.LogFactory;
  */
 public class Merger {
 
-	/** ロガー */
-	private static final Log log = LogFactory.getLog(Merger.class);
+    /** ロガー */
+    private static final Log log = LogFactory.getLog(Merger.class);
 
-	/** クラス種類（class|interface|@interface|enum） */
-	private String classKind;
+    /** クラス種類（class|interface|@interface|enum） */
+    private String classKind;
 
     /** クラス名（パッケージを含む） */
     private String className;
@@ -101,14 +101,12 @@ public class Merger {
             while (clsMat.find()) {
                 this.classKind = clsMat.group(2);
                 this.className = packageName + "." + clsMat.group(3);
-                if(this.className.endsWith("." + className)){
+                if (this.className.endsWith("." + className)) {
                     return;
                 }
             }
         }
-        throw new IllegalArgumentException(
-                "Java ソースからクラス名を取得することが出来ませんでした。\n" +
-                source);
+        throw new IllegalArgumentException("Java ソースからクラス名を取得することが出来ませんでした。\n" + source);
     }
 
     /**

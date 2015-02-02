@@ -22,8 +22,8 @@ import org.apache.commons.logging.LogFactory;
  */
 public class Comment {
 
-	/** ロガー */
-	private static final Log log = LogFactory.getLog(Comment.class);
+    /** ロガー */
+    private static final Log log = LogFactory.getLog(Comment.class);
 
     /** 出力するコメントのデフォルトの横幅 */
     private static final int DEFAULT_WIDTH = Integer.MAX_VALUE;;
@@ -107,8 +107,8 @@ public class Comment {
      */
     private String formatHTML(String comment) {
 
-    	// HTML タグが含まれている可能性があるか
-    	boolean hasHtmlTag = comment.contains("<");
+        // HTML タグが含まれている可能性があるか
+        boolean hasHtmlTag = comment.contains("<");
 
         // HTML タグを小文字に
         if (hasHtmlTag) {
@@ -256,11 +256,10 @@ public class Comment {
     public void setSourceBody(String srcBody) {
 
         // @exception を @throws に置換
-    	this.srcBody = FastStringUtils.replaceAll(
-    			srcBody, "\\s@exception\\s", " @throws ");
+        this.srcBody = FastStringUtils.replaceAll(srcBody, "\\s@exception\\s", " @throws ");
 
         // author タグの内容リスト作成（タグの値に改行あり）
-        srcAuthors      = createWrapTagList("@author");
+        srcAuthors = createWrapTagList("@author");
 
         // throws タグの内容リスト作成（タグの値に改行あり）
         // {@inheritDoc} が指定されている場合は、API ドキュメントの
@@ -269,29 +268,29 @@ public class Comment {
         if (srcThrowses != null && throwses != null) {
             for (String src : srcThrowses) {
 
-            	Pattern pat = PatternCache.getPattern("(?s)(\\w+)\\s+(.*)");
-            	Matcher mat = pat.matcher(src);
+                Pattern pat = PatternCache.getPattern("(?s)(\\w+)\\s+(.*)");
+                Matcher mat = pat.matcher(src);
 
-            	if (mat.find() && mat.group(2).contains("@inheritDoc")) {
+                if (mat.find() && mat.group(2).contains("@inheritDoc")) {
 
-            		String exceptionClassName = mat.group(1);
+                    String exceptionClassName = mat.group(1);
 
-            		for (int i = 0; i < throwses.size(); i++) {
-            			String doc = throwses.get(i);
-            			if (doc.startsWith(exceptionClassName)) {
-            				throwses.set(i, exceptionClassName + " {@inheritDoc}");
-            			}
-            		}
-            	}
+                    for (int i = 0; i < throwses.size(); i++) {
+                        String doc = throwses.get(i);
+                        if (doc.startsWith(exceptionClassName)) {
+                            throwses.set(i, exceptionClassName + " {@inheritDoc}");
+                        }
+                    }
+                }
             }
         }
 
         // その他のタグの内容リスト作成（タグの値に改行なし）
-        srcVersions     = createTagList("@version");
-        srcSerials      = createTagList("@serial");
+        srcVersions = createTagList("@version");
+        srcSerials = createTagList("@serial");
         srcSerialFields = createTagList("@serialField");
-        srcSerialDatas  = createTagList("@serialData");
-        srcSpecs        = createTagList("@spec");
+        srcSerialDatas = createTagList("@serialData");
+        srcSpecs = createTagList("@spec");
     }
 
     /**
@@ -351,33 +350,32 @@ public class Comment {
     public String buildComment() {
 
         if (srcBody == null) {
-            throw new IllegalStateException(
-            "Source comment is null. require #setSourceComment.");
+            throw new IllegalStateException("Source comment is null. require #setSourceComment.");
         }
 
         // Java ソースに @deprecated が含まれない場合は削除。
         // API ドキュメントはクラスが @deprecated であれば自動的に
         // すべてのメソッドに付加されてしまっているため。
-    	if (!srcBody.contains("@deprecated")) {
-    		deprecate = null;
-    	}
+        if (!srcBody.contains("@deprecated")) {
+            deprecate = null;
+        }
 
         // 元 Java ソースのコメントにボディ部が無い（省略によるコメント継承）場合、
         // タグの数が API ドキュメントのより Java ソースのが少ないものを調整
         if (FastStringUtils.matches(srcBody, "(?s)\\s*/\\*\\*[\\s\\*]*@.*")) {
-        	docBody = null;
-        	params  = omitTags(params, "@param");
-        	returns = omitTag(returns, "@return");
-        	throwses = omitTags(throwses, "@throws");
-        	sees    = omitTags(sees, "@see");
+            docBody = null;
+            params = omitTags(params, "@param");
+            returns = omitTag(returns, "@return");
+            throwses = omitTags(throwses, "@throws");
+            sees = omitTags(sees, "@see");
         }
 
         // 元 Java ソースのコメントから行数とインデント取得
         int decoSize = 2;
         int originDecoHeight = FastStringUtils.heightOf(srcBody);
         if (originDecoHeight <= 0) {
-//            throw new IllegalStateException(
-//            "Illegal comment height " + originDecoHeight + "\n" + srcBody);
+            //            throw new IllegalStateException(
+            //            "Illegal comment height " + originDecoHeight + "\n" + srcBody);
         }
         int originHeight = originDecoHeight;
         if (originDecoHeight > decoSize) {
@@ -385,9 +383,9 @@ public class Comment {
         }
         String indent = FastStringUtils.replaceFirst(srcBody, "(?s)^( *?)/\\*\\*.*", "$1");
 
-    	// API ドキュメントのコメント内の pre タグ内容を Java ソースのものに置換
+        // API ドキュメントのコメント内の pre タグ内容を Java ソースのものに置換
         if (docBody != null) {
-        	replacePreBody();
+            replacePreBody();
         }
 
         // 元 Java ソースの飾り付けを含むコメント行数が 2 行以下の場合
@@ -396,7 +394,7 @@ public class Comment {
             sb.append(indent);
             sb.append("/** ");
             if (docBody != null && docBody.length() > 0) {
-                String str =  FastStringUtils.replaceAll(docBody, "\n", "");
+                String str = FastStringUtils.replaceAll(docBody, "\n", "");
                 sb.append(str);
             } else if (sinces != null && sinces.size() > 0) {
                 sb.append("@since ");
@@ -447,14 +445,14 @@ public class Comment {
      */
     private List<String> omitTag(List<String> docTagList, String tagName) {
 
-    	if (docTagList != null && docTagList.size() > 0) {
+        if (docTagList != null && docTagList.size() > 0) {
 
             List<String> srcTagList = createWrapTagList(tagName);
             if (srcTagList == null || srcTagList.size() == 0) {
-            	return null;
+                return null;
             }
-    	}
-    	return docTagList;
+        }
+        return docTagList;
     }
 
     /**
@@ -471,31 +469,29 @@ public class Comment {
      */
     private List<String> omitTags(List<String> docTagList, String tagName) {
 
-    	if (docTagList != null && docTagList.size() > 0) {
+        if (docTagList != null && docTagList.size() > 0) {
 
             List<String> srcTagList = createWrapTagList(tagName);
             if (srcTagList == null || srcTagList.size() == 0) {
-            	return null;
+                return null;
             }
-        	if (docTagList.size() > srcTagList.size()) {
-        		List<String> names = new ArrayList<String>();
-        		for (String src : srcTagList) {
-					String name =
-						FastStringUtils.replaceFirst(src, "(?s)^(\\S+)\\s.*$", "$1");
-					names.add(name);
-				}
-        		List<String> newTagList = new ArrayList<String>();
-        		for (String doc : docTagList) {
-					String name =
-						FastStringUtils.replaceFirst(doc, "(?s)^(\\S+)\\s.*$", "$1");
-					if (names.contains(name)) {
-						newTagList.add(doc);
-					}
-				}
-        		return newTagList;
-        	}
-    	}
-    	return docTagList;
+            if (docTagList.size() > srcTagList.size()) {
+                List<String> names = new ArrayList<String>();
+                for (String src : srcTagList) {
+                    String name = FastStringUtils.replaceFirst(src, "(?s)^(\\S+)\\s.*$", "$1");
+                    names.add(name);
+                }
+                List<String> newTagList = new ArrayList<String>();
+                for (String doc : docTagList) {
+                    String name = FastStringUtils.replaceFirst(doc, "(?s)^(\\S+)\\s.*$", "$1");
+                    if (names.contains(name)) {
+                        newTagList.add(doc);
+                    }
+                }
+                return newTagList;
+            }
+        }
+        return docTagList;
     }
 
     /**
@@ -506,12 +502,12 @@ public class Comment {
      */
     private void replacePreBody() {
 
-    	// pre タグが含まれない場合は何もしない
-    	if (!docBody.contains("<pre>")) {
-    		return;
-    	}
+        // pre タグが含まれない場合は何もしない
+        if (!docBody.contains("<pre>")) {
+            return;
+        }
 
-    	// Java ソースコメントから pre タグの値を取得
+        // Java ソースコメントから pre タグの値を取得
         LinkedList<String> pres = null;
         String commentBody = FastStringUtils.replaceAll(srcBody, "(?m)^\\s*\\*( |)", "");
         Pattern pat = PatternCache.getPattern("(?s)(<pre>\n)(.+?)(\n</pre>)");
@@ -531,10 +527,10 @@ public class Comment {
         StringBuffer sb = new StringBuffer();
         while (descMatcher.find()) {
 
-        	// pre タグの数が一致しないため何もしない
+            // pre タグの数が一致しないため何もしない
             if (pres.size() == 0) {
-            	return;
-        	}
+                return;
+            }
             String value = FastStringUtils.quoteReplacement(pres.removeFirst());
             descMatcher.appendReplacement(sb, "$1" + value + "$3");
         }
@@ -593,13 +589,13 @@ public class Comment {
                 StringBuilder sb = new StringBuilder();
                 str = FastStringUtils.replaceAll(str, "(?m)^", LINE_PREFIX);
                 if (enabledFirstLine) {
-                    sb.append( "/**" );
+                    sb.append("/**");
                     str = FastStringUtils.replaceFirst(str, "^ \\*", "");
                 } else {
-                    sb.append( "/**\n" );
+                    sb.append("/**\n");
                 }
-                sb.append( str );
-                sb.append( " */\n" );
+                sb.append(str);
+                sb.append(" */\n");
                 str = sb.toString();
             }
             return str;
@@ -620,9 +616,7 @@ public class Comment {
 
             // 小さくならない場合は
             // docBody の <pre> タグ外の改行をすべて除去し、再構築。
-            if (docBody != null
-            		&& o.resultHeight() > o.originHeight
-            		&& docBody.contains("\n")) {
+            if (docBody != null && o.resultHeight() > o.originHeight && docBody.contains("\n")) {
 
                 StringBuilder sb = new StringBuilder();
                 boolean inPreTag = false;
@@ -653,8 +647,7 @@ public class Comment {
             // 今のところ JDK5.0 API ドキュメントで shrinkComment メソッドで
             // オリジナルより小さく出来ないのは
             // BasicEditorPaneUI#installUI(JComponent) のひとつだけ。
-            if (docBody != null
-            		&& o.resultHeight() > o.originHeight) {
+            if (docBody != null && o.resultHeight() > o.originHeight) {
 
                 int pos = docBody.indexOf('。');
                 if (pos != -1) {
@@ -671,12 +664,8 @@ public class Comment {
             if (o.resultHeight() > o.originHeight) {
 
                 // JDK5.0 API ドキュメントではここは通らない
-                log.warn(sig
-                		+ " 行数調整不可のためマージ出来ませんでした。\n"
-                		+ "-------------------------------------------------\n"
-                		+ "英語コメント:\n" + srcBody
-                		+ "\n日本語コメント:\n" + o.toString()
-                		+ "-------------------------------------------------\n");
+                log.warn(sig + " 行数調整不可のためマージ出来ませんでした。\n" + "-------------------------------------------------\n" + "英語コメント:\n" + srcBody
+                        + "\n日本語コメント:\n" + o.toString() + "-------------------------------------------------\n");
                 return srcBody;
             }
             decoComment = o.toString();
@@ -921,23 +910,23 @@ public class Comment {
         // 説明の組み立て
         if (docBody != null && docBody.length() > 0) {
             if (originHeight == 1) {
-                sb.append( FastStringUtils.replaceAll(docBody, "\n", "") );
-                sb.append( "\n" );
+                sb.append(FastStringUtils.replaceAll(docBody, "\n", ""));
+                sb.append("\n");
                 return sb.toString();
             }
-            sb.append( adjustWidth(docBody, width) );
-            sb.append( "\n" );
+            sb.append(adjustWidth(docBody, width));
+            sb.append("\n");
         }
 
         // deprecated タグの組み立て
         if (deprecate != null && deprecate.length() > 0) {
             String depre = "@deprecated " + deprecate;
-            sb.append( adjustWidth(depre, width) );
-            sb.append( "\n" );
+            sb.append(adjustWidth(depre, width));
+            sb.append("\n");
         }
 
-        appendTo("@author  ",    srcAuthors,      sb, width);
-        appendTo("@version ",    srcVersions,     sb, width);
+        appendTo("@author  ", srcAuthors, sb, width);
+        appendTo("@version ", srcVersions, sb, width);
 
         // param タグの組み立て
         if (params != null && params.size() > 0) {
@@ -949,19 +938,19 @@ public class Comment {
             final int nameLenLimit = 12;
 
             for (int i = 0; i < paramsSize; i++) {
-				String comment = params.get(i);
+                String comment = params.get(i);
                 String name = FastStringUtils.replaceFirst(comment, "(?s)(\\w+)\\s.*", "$1");
                 nameLens[i] = name.length();
                 if (nameLens[i] > nameLenMax && nameLens[i] < nameLenLimit) {
                     nameLenMax = nameLens[i];
                 }
-			}
+            }
 
             // 2 行目以降のインデントを作成
             String tag = "@param   ";
             int indentCnt = tag.length() + nameLenMax + 1;
             StringBuilder indent = new StringBuilder(indentCnt);
-            for ( ;indentCnt>0; indentCnt--) {
+            for (; indentCnt > 0; indentCnt--) {
                 indent.append(' ');
             }
 
@@ -970,13 +959,12 @@ public class Comment {
 
                 int spaceCnt = nameLenMax - nameLens[i];
                 StringBuilder space = new StringBuilder();
-                for ( ;spaceCnt>0; spaceCnt--) {
+                for (; spaceCnt > 0; spaceCnt--) {
                     space.append(' ');
                 }
 
                 String comment = params.get(i);
-                comment = FastStringUtils.replaceFirst(comment,
-                    "(?s)(\\w+)\\s+(.*)", "$1" + space + " $2");
+                comment = FastStringUtils.replaceFirst(comment, "(?s)(\\w+)\\s+(.*)", "$1" + space + " $2");
                 comment = adjustWidth(comment, width - tag.length());
                 StringTokenizer st = new StringTokenizer(comment, "\n");
 
@@ -996,14 +984,14 @@ public class Comment {
             }
         }
 
-        appendTo("@return  ",    returns,      sb, width);
-        appendTo("@throws  ",    throwses,      sb, width);
+        appendTo("@return  ", returns, sb, width);
+        appendTo("@throws  ", throwses, sb, width);
         appendTo("@serialField", srcSerialFields, sb, width);
-        appendTo("@serialData",  srcSerialDatas,  sb, width);
-        appendTo("@see     ",    sees,         sb, width);
-        appendTo("@since   ",    sinces,       sb, width);
-        appendTo("@serial  ",    srcSerials,      sb, width);
-        appendTo("@spec    ",    srcSpecs,        sb, width);
+        appendTo("@serialData", srcSerialDatas, sb, width);
+        appendTo("@see     ", sees, sb, width);
+        appendTo("@since   ", sinces, sb, width);
+        appendTo("@serial  ", srcSerials, sb, width);
+        appendTo("@spec    ", srcSpecs, sb, width);
 
         String str = sb.toString();
         str = FastStringUtils.replaceFirst(str, "\n\n$", "\n");
@@ -1076,7 +1064,7 @@ public class Comment {
             // pre タグ判定
             if (lineValue.startsWith("</pre>")) {
                 preTagArea = false;
-            } else if (lineValue.startsWith("<pre>" )) {
+            } else if (lineValue.startsWith("<pre>")) {
                 preTagArea = true;
             }
             if (preTagArea) {
@@ -1087,7 +1075,7 @@ public class Comment {
                 }
                 continue;
             }
-            if (lineValue.endsWith("<pre>" )) {
+            if (lineValue.endsWith("<pre>")) {
                 preTagArea = true;
             }
 
@@ -1107,8 +1095,7 @@ public class Comment {
             }
 
             // 長い英数字文字列は先頭に改行を付加
-            String multiLineValue = FastStringUtils.replaceAll(lineValue,
-                "\\s?(\\p{Graph}{" + longWordWidth + ",})", "\n$1");
+            String multiLineValue = FastStringUtils.replaceAll(lineValue, "\\s?(\\p{Graph}{" + longWordWidth + ",})", "\n$1");
 
             StringTokenizer st = new StringTokenizer(multiLineValue, "\n");
             while (st.hasMoreTokens()) {
@@ -1191,16 +1178,16 @@ public class Comment {
                             char bc = buf.charAt(bPos);
 
                             if (bc == ' ') {
-                                buf.replace(bPos, bPos+1, "\n");
-                                bufLen = buf.substring(bPos+1).getBytes().length;
+                                buf.replace(bPos, bPos + 1, "\n");
+                                bufLen = buf.substring(bPos + 1).getBytes().length;
                                 break;
 
                             } else {
 
                                 int bcLen = String.valueOf(bc).getBytes().length;
                                 if (bcLen > 1) {
-                                    buf.insert(bPos+1, '\n');
-                                    bufLen = buf.substring(bPos+2).getBytes().length;
+                                    buf.insert(bPos + 1, '\n');
+                                    bufLen = buf.substring(bPos + 2).getBytes().length;
                                     break;
                                 }
                             }
