@@ -152,13 +152,24 @@ public class JavaBuffer {
                         break;
                     }
                 }
-            } else if (c[i-1] != '\\' && c[i-1] != '\'' && c[i] == '"') {
-            	// リテラル（シングルまたはダブルクォートで囲まれた部分）を読み飛ばし
+            } else if (c[i-1] != '\'' && c[i] == '"') {
+            	// ダブルクォートで囲まれた部分を読み飛ばし
                 for (i++; i <= last; i++) {
-                    if (c[i-1] != '\\' && c[i-1] != '\'' && c[i] == '"') {
-                        break;
+                    if (c[i] == '"') {
+                    	if(c[i-1] != '\\' || (c[i -1] == '\\' && c[i -2] == '\\')){
+                    		break;
+                    	}
                     }
                 }
+            } else if (c[i-1] != '"' && c[i] == '\'') {
+            	// シングルクォートで囲まれた部分を読み飛ばし
+            	for (i++; i <= last; i++) {
+            		if (c[i] == '\'') {
+            			if(c[i-1] != '\\' || (c[i -1] == '\\' && c[i -2] == '\\')){
+                    		break;
+                    	}
+            		}
+            	}
             }
             if (i >= last) {
                 break;
@@ -266,6 +277,9 @@ public class JavaBuffer {
             int currentEnd = commentMatcher.end();
             if (nextMat.find(currentEnd)) {
                 String c2c = source.substring(currentEnd, nextMat.start());
+                // ブロックコメント、行コメントを削除(java.awt.GridBagLayoutやorg.omg.PortableServer.Servant等に対応する為)
+                c2c = PatternCache.getPattern("(?s)/\\*(?:[^\\*].*?)?\\*/").matcher(c2c).replaceAll("");
+                c2c = PatternCache.getPattern("//.*").matcher(c2c).replaceAll("");
                 if (FastStringUtils.matches(c2c, "\\s*")) {
                     continue;
                 }
@@ -289,9 +303,24 @@ public class JavaBuffer {
      * @return シグネチャ。取得できない場合は null。
      */
     public Signature getSignature() {
-
         int commentEndPos = commentMatcher.end();
         String commentEndToEOF = source.substring(commentEndPos, source.length());
+		Matcher matcher = PatternCache.getPattern("(?s)/\\*(.*?)\\*/").matcher(commentEndToEOF);
+		StringBuffer sb = new StringBuffer(commentEndToEOF.length());
+		while (matcher.find()) {
+			String comment = matcher.group();
+			if(comment.contains(DUMMY_COMMENT)){
+				matcher.appendReplacement(sb, comment);
+				continue;
+			}
+			matcher.appendReplacement(sb, "");
+			sb.append("/*");
+			sb.append(PatternCache.getPattern("[^\\*\n]").matcher(matcher.group(1))
+					.replaceAll(" "));
+			sb.append("*/");
+		}
+        matcher.appendTail(sb);
+        commentEndToEOF = sb.toString();
 
         // シグネチャを取得しやすくするためにアノテーション宣言を除去
         commentEndToEOF = FastStringUtils.replaceFirst(
@@ -334,6 +363,14 @@ public class JavaBuffer {
         return null;
     }
 
+    public static String repeat(char ch, int repeat) {
+        char[] buf = new char[repeat];
+        for (int i = repeat - 1; i >= 0; i--) {
+            buf[i] = ch;
+        }
+        return new String(buf);
+    }
+
     /**
      * インナークラスの終了位置を取得します。
      * @param currentToEnd ソースの現在位置から最後までの文字列
@@ -341,38 +378,55 @@ public class JavaBuffer {
      * @return インナークラスの終了位置
      */
     private int searchEndOfInner(String currentToEnd, String iClassName) {
-
-        int nestLevel = 1;
         // コメント中に { があり、}との整合性がとれない場合があるため、
-        // コメント内かどうかを判定する 例：java.util.Spliterators
-        // TODO 上のソースのようにコメントの読み飛ばす
-        boolean inComment = false;
-        int length = currentToEnd.length();
-        for (int i = currentToEnd.indexOf('{') + 1; i < length; i++) {
-            char c = currentToEnd.charAt(i);
-            if(inComment == false) {
-                if (c == '{') {
-                    nestLevel++;
-                }
-                if (c == '}') {
-                    nestLevel--;
-                }
+        // コメントを読み飛ばして判定する 例：java.util.Spliterators
+    	int nestLevel = 0;
+        char[] c = currentToEnd.toCharArray();
+        int last = c.length - 1;
+        boolean startInnerClass = false;
+        for (int i = 1; i<= last; i++){
+        	if(c[i -1] == '{') {
+            	nestLevel++;
+            	startInnerClass = true;
+            }else if(c[i -1] == '}') {
+            	nestLevel--;
             }
-            if (c == '/') {
-                if(inComment == false) {
-                    if(i + 1 < length) {
-                        if(currentToEnd.charAt(i + 1) == '*') {
-                            inComment = true;
-                        }
-                    }
-                }else {
-                    if(currentToEnd.charAt(i - 1) == '*') {
-                        inComment = false;
+            if (startInnerClass == true && nestLevel == 0) {
+            	return commentMatcher.end() + i - 1;
+            }
+        	if (c[i-1] == '/' && c[i] == '*') {
+            	// ブロックコメントを読み飛ばし
+                for (i++; i <= last; i++) {
+                    if (c[i-1] == '*' && c[i] == '/') {
+                        break;
                     }
                 }
-            }
-            if (nestLevel == 0) {
-                return commentMatcher.end() + i;
+            } else if (c[i-1] == '/' && c[i] == '/') {
+            	// 行コメントを読み飛ばし
+                for (i++; i <= last; i++) {
+                    if (c[i] == '\n') {
+                        i++;
+                        break;
+                    }
+                }
+            } else if (c[i-1] != '\'' && c[i] == '"') {
+            	// ダブルクォートで囲まれた部分を読み飛ばし
+                for (i++; i <= last; i++) {
+                    if (c[i] == '"') {
+                    	if(c[i-1] != '\\' || (c[i -1] == '\\' && c[i -2] == '\\')){
+                    		break;
+                    	}
+                    }
+                }
+            } else if (c[i-1] != '"' && c[i] == '\'') {
+            	// シングルクォートで囲まれた部分を読み飛ばし
+            	for (i++; i <= last; i++) {
+            		if (c[i] == '\'') {
+            			if(c[i-1] != '\\' || (c[i -1] == '\\' && c[i -2] == '\\')){
+                    		break;
+                    	}
+            		}
+            	}
             }
         }
 
