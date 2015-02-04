@@ -353,7 +353,7 @@ public class MergeDocFrame extends JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                MergeDocFrame.super.setTitle("MergeDoc - " + title);
+                MergeDocFrame.super.setTitle("MergeDoc7 - " + title);
             }
         });
     }
