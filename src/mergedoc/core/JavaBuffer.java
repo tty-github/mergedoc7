@@ -298,17 +298,23 @@ public class JavaBuffer {
     public Signature getSignature() {
         int commentEndPos = commentMatcher.end();
         String commentEndToEOF = source.substring(commentEndPos, source.length());
+        // コメント内のシグネチャを取得しないように、コメント内を削除
         Matcher matcher = PatternCache.getPattern("(?s)/\\*(.*?)\\*/").matcher(commentEndToEOF);
         StringBuffer sb = new StringBuffer(commentEndToEOF.length());
         while (matcher.find()) {
-            String comment = matcher.group();
-            if (comment.contains(DUMMY_COMMENT)) {
-                matcher.appendReplacement(sb, comment);
-                continue;
+            matcher.appendReplacement(sb, "/*");
+            char[] cs = matcher.group(1).toCharArray();
+            for (char c : cs) {
+                switch (c) {
+                case '*':
+                case '\n':
+                    sb.append(c);
+                    break;
+                default:
+                    sb.append(' ');
+                    break;
+                }
             }
-            matcher.appendReplacement(sb, "");
-            sb.append("/*");
-            sb.append(PatternCache.getPattern("[^\\*\n]").matcher(matcher.group(1)).replaceAll(" "));
             sb.append("*/");
         }
         matcher.appendTail(sb);
